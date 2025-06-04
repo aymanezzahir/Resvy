@@ -1,68 +1,121 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
+* {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+:root {
+  background: transparent;
+  overflow-y: scroll;
+  scrollbar-color: #d9d9d9 transparent;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+@layer components {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d9d9d9;
+  }
+  ::-webkit-scrollbar-track {
+    background: #19001b;
+  }
+
+  .gr1 {
+    @apply bg-gradient-to-bl from-redone/70 !bg-transparent to-redone;
+  }
+
+  .gr2 {
+    @apply bg-gradient-to-tl from-orangeone/40 to-orangeone;
+  }
+
+  .hover1 {
+    @apply hover:bg-[#ddd] transition-all;
+  }
+
+  .btn-primary {
+    @apply text-white bg-bg_color rounded-xl  font-primary font-semibold px-4 py-2;
+  }
+  .btn-regular {
+    @apply bg-light font-primary rounded-xl border py-2 font-semibold  px-4;
+  }
+
+  .btn-regular-orange {
+    @apply bg-transparent relative after:bg-orangeone rounded-xl border-2 border-orangeone isolate hover:text-white overflow-hidden py-2 px-4 hover:after:h-full;
+  }
+  .container {
+    @apply mx-auto px-2;
+  }
+
+  .title-text{
+    @apply text-3xl font-bold mb-10 text-center font-primary text-white;
+  }
+
+  .flexCol {
+    @apply flex flex-col justify-start items-center;
+  }
+  .flexCenter {
+    @apply flex justify-center items-center;
+  }
+
+  .flexBetween {
+    @apply flex justify-between items-center;
+  }
+
+  .flexStart {
+    @apply flex items-center justify-start;
+  }
+  .flexEnd {
+    @apply flex items-center justify-end;
+  }
+
+  .text-small {
+    @apply text-sm font-medium;
+  }
+  .headerFixed {
+    @apply fixed inset-0 z-40  bottom-auto transition-all;
+  }
+
+  .paddings {
+    @apply lg:px-20 py-6 px-5;
+  }
+  .title-font {
+    @apply text-2xl md:text-3xl lg:text-4xl xl:text-5xl;
+  }
+  .paragh-font {
+    @apply text-lg md:text-base lg:text-lg xl:text-2xl text-[#777];
+  }
+  .absoluteCenter {
+    @apply absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%];
+  }
+
+  .text-header {
+    @apply font-header text-xl md:text-3xl lg:text-5xl my-5 text-redone  text-center;
+  }
+  .text-header-title {
+    @apply font-header text-5xl text-center text-redone;
+  }
+
+  .inputNormal {
+    @apply input bg-white focus:outline-redone border-[#cecece];
+  }
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+.glass {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+button{
+  font-family: "Poppins" , sans-serif;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
