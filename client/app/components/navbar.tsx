@@ -2,7 +2,14 @@ import { cn } from "lib/util";
 import { Link, NavLink } from "react-router";
 import { sidebarItems } from "~/constants";
 
-export default function NavBar() {
+export default function NavBar({toogleSidebar} : {toogleSidebar? : () => void}) {
+
+  // dumb data
+  const user = {
+    name : "ayman",
+    email : "aymanefront2004@gmail.com",
+
+  }
   return (
     <section className="nav-items">
       <Link to="/" className="link-logo">
@@ -13,7 +20,7 @@ export default function NavBar() {
       <div className="container">
         <nav>
           {sidebarItems.map(({id , href , label , icon}) => (
-            <NavLink to={href} key={id}>
+            <NavLink to={href} key={id} onClick={toogleSidebar}>
               {({isActive} : {isActive : boolean}) => (
 
                 <div className={cn("group nav-item" , { "bg-primary-100 text-white": isActive}
