@@ -8,17 +8,32 @@ export const sidebarItems = [
     href: "/dashboard",
   },
   {
-    id: 3,
-    icon: "/assets/icons/users.svg",
-    label: "G. Utilisateurs",
-    href: "/all-users",
+    id: 2,
+    icon: "/assets/icons/itinerary.svg",
+    label: "Reservation",
+    href: "/reservation",
+  },
+  
+  {
+    id: 2,
+    icon: "/assets/icons/itinerary.svg",
+    label: "Chambres",
+    href: "/chambres",
   },
   {
-    id: 4,
+    id: 2,
     icon: "/assets/icons/itinerary.svg",
-    label: "AI Trips",
-    href: "/trips",
+    label: "Menu",
+    href: "/menu",
   },
+
+  {
+    id: 4,
+    icon: "/assets/icons/users.svg",
+    label: "Utilisateur",
+    href: "/all-users",
+  },
+  
 ];
 
 export const chartOneData: object[] = [

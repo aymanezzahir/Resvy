@@ -13,7 +13,7 @@ export default function NavBar({toogleSidebar} : {toogleSidebar? : () => void}) 
   return (
     <section className="nav-items">
       <Link to="/" className="link-logo">
-        <img src="/assets/icons/logo.svg" alt="logo" className="size-[30px]" />
+       
         <h1>Resvy</h1>
       </Link>
 
