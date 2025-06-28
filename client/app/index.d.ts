@@ -5,6 +5,22 @@ declare interface BaseUser {
   dateJoined: string;
   imageUrl: string;
 }
+declare interface Reservation {
+  id: string,
+  fullName: string;
+  email: string;
+  phone: string;
+  total: number;
+  numberOfGuests: number;
+  nChambre : number;
+  starRoom: number;
+  checkInDate: string; // Format: YYYY-MM-DD
+  checkOutDate: string; // Format: YYYY-MM-DD
+  specialRequests?: string; // Optional
+  paymentMethod: "Carte de crédit" | "Espèces à l'arrivée" | "PayPal" | "Carte bancaire" | "Virement bancaire";
+  status: "Confirmée" | "Terminée" | "Annulée" | "En cours";
+}
+
 
 declare interface UserData extends BaseUser {
   itineraryCreated: number | string;

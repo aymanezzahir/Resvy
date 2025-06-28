@@ -1,6 +1,10 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import dayjs from "dayjs";
+import 'dayjs/locale/fr'; // importer le locale français
+
+dayjs.locale('fr');
+
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -36,6 +40,19 @@ export function parseTripData(jsonString: string): Trip | null {
         return null;
     }
 }
+
+export function calculateTotal(start : number, nbr : number) {
+  const maxStart = 5;
+  const baseRate = Math.min(start, maxStart); // limit start to 5
+  const extraPerPerson = 20;
+  const extraPeople = Math.max(nbr - 1, 0);
+  const total = baseRate + (extraPerPerson * extraPeople);
+  return total;
+}
+
+// Example usage:
+console.log(calculateTotal(10, 3)); // start will be capped at 5, so output: 5 + (20 * 2) = 45
+
 
 export function getFirstWord(input: string = ""): string {
     return input.trim().split(/\s+/)[0] || "";
