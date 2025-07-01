@@ -27,7 +27,7 @@ export default function NavBar({toogleSidebar} : {toogleSidebar? : () => void}) 
                 )}
                 
                 >
-                  <img src={icon} alt={label} className={ `group-hover:brightness-0 size-0 group-hover:invert ${isActive ? "invert brightness-0" : "text-dark-200"}`} />
+                  <img src={icon} alt={label} className={ `group-hover:brightness-0  group-hover:invert ${isActive ? "invert brightness-0" : "text-dark-200"}`} />
                   {label}
                 </div>
               )}
