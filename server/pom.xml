@@ -45,10 +45,12 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
+			<version>10.15.0</version>
 		</dependency>
 		<dependency>
-			<artifactId>flyway-mysql</artifactId>
 			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+			<version>10.15.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.mysql</groupId>
@@ -74,6 +76,17 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>10.15.0</version>
+				<configuration>
+					<url>jdbc:mysql://localhost:3306/hotel</url>
+					<user>youpi</user>
+					<password>Stux.neT321</password>
+					<cleanDisabled>false</cleanDisabled>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
