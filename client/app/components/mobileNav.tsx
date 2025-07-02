@@ -1,6 +1,8 @@
 import { SidebarComponent } from "@syncfusion/ej2-react-navigations";
 import { Link } from "react-router";
 import NavBar from "./navbar";
+import { Category, ChartComponent, ColumnSeries, DataLabel, Inject, SeriesCollectionDirective, SeriesDirective, SplineAreaSeries, Tooltip } from "@syncfusion/ej2-react-charts";
+import { tripXAxis, tripyAxis, userXAxis, useryAxis } from "~/constants";
 
 export default function Mobilenav() {
     // define side bar component
@@ -25,7 +27,7 @@ export default function Mobilenav() {
 
         <SidebarComponent
             width={270}
-            type="over"
+          
             ref={(navbar)=> sidebar = navbar}
             created={toogleSidebar}
             showBackdrop={true}
@@ -33,6 +35,8 @@ export default function Mobilenav() {
         >
             <NavBar toogleSidebar={toogleSidebar}/>
         </SidebarComponent>
+
+    
     </div>
   )
 }

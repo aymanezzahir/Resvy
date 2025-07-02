@@ -13,7 +13,7 @@ export default function Reservation() {
 
   const [visible , setvisisble] = useState<{visible : boolean , selectedID : string | null,  data : Reservation[]}>({visible : false , data : reservations , selectedID : null})
   return (
-    <main className="dashboard wrapper">
+    <main className="wrapper all-users">
       <Header
         title="Carnet de réservations 📖"
         description="Consultez, gérez et organisez toutes les réservations de vos clients."

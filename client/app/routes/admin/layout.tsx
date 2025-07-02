@@ -8,8 +8,8 @@ export default function AdminLayout() {
 
       <Mobilenav />
 
-      <aside className="w-full max-w-[270px] hidden lg:block">
-        <SidebarComponent width={279} enableGestures={false}>
+      <aside className="w-full max-w-[270px] hidden 2xl:block">
+        <SidebarComponent width={270}  enableGestures={false}>
           <NavBar />
         </SidebarComponent>
       </aside>
