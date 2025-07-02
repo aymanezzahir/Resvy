@@ -20,9 +20,9 @@
   --color-gray-200: #eaecf0;
   --color-gray-500: #667085;
   --color-gray-700: #344054;
-  --color-primary-50: #e9f3fb;
-  --color-primary-100: #256ff1;
-  --color-primary-500: #175cd3;
+  --color-primary-50: #E3DE61;
+  --color-primary-100: #97B067;
+  --color-primary-500: #437057;
   --color-light-100: #ecf2ef;
   --color-light-200: #f9fbfc;
   --color-light-300: #f2f4f7;
@@ -147,7 +147,7 @@
       @apply flex flex-col bg-linear100 bg-cover;
 
       section {
-        @apply py-48 justify-center items-start flex flex-col gap-6;
+        @apply py-24 justify-center items-start flex flex-col gap-6;
 
         article {
           @apply flex flex-col w-full md:max-w-[520px] gap-3.5;
@@ -278,7 +278,7 @@
     }
   }
   .link-logo {
-    @apply flex items-center gap-1.5 py-10 border-b border-light-100;
+    @apply flex items-center gap-1.5 py-5;
     h1 {
       @apply text-base md:text-2xl font-bold text-dark-100;
     }
@@ -299,7 +299,7 @@
     }
   }
   .mobile-sidebar {
-    @apply lg:hidden flex flex-col gap-5;
+    @apply 2xl:hidden flex flex-col gap-5;
     header {
       @apply flex justify-between items-center border-b border-light-100;
       h1 {
@@ -313,7 +313,7 @@
   .root-nav {
     @apply flex justify-between gap-4  items-center;
     a {
-      @apply flex items-center gap-1.5 py-10;
+      @apply flex items-center gap-1.5 ;
       h1 {
         @apply text-base md:text-2xl font-bold text-dark-100;
       }
@@ -357,9 +357,9 @@
   }
 
   .admin-layout {
-    @apply flex flex-col lg:flex-row h-screen w-full;
+    @apply flex flex-col 2xl:flex-row h-screen w-full;
     .children {
-      @apply w-full h-full bg-light-200 pt-12 lg:pt-10;
+      @apply w-full h-full bg-light-200 pt-12 2xl:pt-10;
     }
   }
   .user-trip {
@@ -393,7 +393,7 @@
 
 @layer utilities {
   .wrapper {
-    @apply w-full max-w-7xl mx-auto px-4 lg:px-8;
+    @apply w-full max-w-7xl mx-auto px-4 xl:px-8;
   }
   .wrapper-md {
     @apply w-full max-w-3xl px-4 lg:px-8 mx-auto;
@@ -542,4 +542,10 @@ body {
   position: absolute;
   top: 45px;
   right: 40px;
+}
+
+@media (min-width: 900px) and (max-width: 1433px) {
+  .reservation-table-handler{
+    max-width: 880px;
+  }
 }
