@@ -1,7 +1,10 @@
 import {
   ColumnDirective,
   ColumnsDirective,
+  Filter,
   GridComponent,
+  Search,
+  Toolbar,
   Inject,
 } from "@syncfusion/ej2-react-grids";
 import { calculateTotal, cn, formatDate } from "lib/util";
@@ -10,8 +13,11 @@ import { reservations } from "~/constants";
 
 import { useState } from "react";
 export default function Reservation() {
-
-  const [visible , setvisisble] = useState<{visible : boolean , selectedID : string | null,  data : Reservation[]}>({visible : false , data : reservations , selectedID : null})
+  const [visible, setvisisble] = useState<{
+    visible: boolean;
+    selectedID: string | null;
+    data: Reservation[];
+  }>({ visible: false, data: reservations, selectedID: null });
   return (
     <main className="wrapper all-users">
       <Header
@@ -19,24 +25,34 @@ export default function Reservation() {
         description="Consultez, gérez et organisez toutes les réservations de vos clients."
       />
 
-      <GridComponent dataSource={reservations} >
+      <GridComponent
+        dataSource={reservations}
+        allowFiltering={true}
+        allowPaging={true}
+        allowSorting={true}
+        toolbar={["Search"]}
+        pageSettings={{ pageSize: 6 }}
+      >
+        <Inject services={[ Search , Toolbar]} />
         <ColumnsDirective>
           <ColumnDirective
             field=""
             headerText=""
-            
             width="70"
             textAlign="Left"
-             template={(props: Reservation) => (
-           
-                <button className="cursor-pointer" onClick={() => setvisisble(() => ({
-                  visible : true,
-                  data : reservations,
-                  selectedID : props.id
-                }))}> 
-                  <img width={30} src="/assets/icons/edit.svg" />
-                </button>
-             
+            template={(props: Reservation) => (
+              <button
+                className="cursor-pointer"
+                onClick={() =>
+                  setvisisble(() => ({
+                    visible: true,
+                    data: reservations,
+                    selectedID: props.id,
+                  }))
+                }
+              >
+                <img width={30} src="/assets/icons/edit.svg" />
+              </button>
             )}
           />
           <ColumnDirective
@@ -44,11 +60,8 @@ export default function Reservation() {
             headerText="Nom complet"
             width="200"
             textAlign="Left"
-            template={(props: Reservation) => (
-           
-                <span>{props.fullName}</span>
-             
-            )}
+            filter={{ type: "Menu" }}
+            template={(props: Reservation) => <span>{props.fullName}</span>}
           />
           <ColumnDirective
             field="phone"
@@ -68,9 +81,9 @@ export default function Reservation() {
             width="70"
             textAlign="Left"
             template={(props: Reservation) => (
-           
-                <span>{calculateTotal(props.starRoom , props.numberOfGuests)}$</span>
-             
+              <span>
+                {calculateTotal(props.starRoom, props.numberOfGuests)}$
+              </span>
             )}
           />
           <ColumnDirective
@@ -84,7 +97,7 @@ export default function Reservation() {
             headerText="Date d’arrivée"
             width="140"
             textAlign="Left"
-            template={({ checkInDate }  : { checkInDate: string }) =>
+            template={({ checkInDate }: { checkInDate: string }) =>
               formatDate(checkInDate)
             }
           />
@@ -93,7 +106,7 @@ export default function Reservation() {
             headerText="Date de départ"
             width="140"
             textAlign="Left"
-            template={({ checkOutDate }  : { checkOutDate: string }) =>
+            template={({ checkOutDate }: { checkOutDate: string }) =>
               formatDate(checkOutDate)
             }
           />

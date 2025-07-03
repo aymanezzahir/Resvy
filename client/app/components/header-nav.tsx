@@ -20,8 +20,8 @@ const RootNavbar = () => {
         <nav className={cn('w-full fixed z-50 glassmorphism')}>
             <header className="root-nav wrapper">
                 <Link to='/' className="link-logo">
-                    <img src="/assets/icons/logo.svg" alt="logo" className="size-[30px]" />
-                    <h1>Tourvisto</h1>
+                    <img src="/assets/logo.png" alt="logo" className="size-[30px]" />
+                    <h1>Resvy</h1>
                 </Link>
 
              {user ?   <aside>

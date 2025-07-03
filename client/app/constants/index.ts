@@ -17,13 +17,13 @@ export const sidebarItems = [
   
   {
     id: 2,
-    icon: "/assets/icons/itinerary.svg",
+    icon: "/assets/icons/bed.svg",
     label: "Chambres",
     href: "/chambres",
   },
   {
     id: 2,
-    icon: "/assets/icons/itinerary.svg",
+    icon: "/assets/icons/cutlery.svg",
     label: "Menu",
     href: "/menu",
   },
