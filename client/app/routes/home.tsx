@@ -62,6 +62,8 @@ const TravelPage = ({ loaderData }: Route.ComponentProps) => {
       `Réservation du ${checkIn} au ${checkOut} pour ${guests} personne(s).`
     );
   };
+
+  
   return (
     <div>
       <RootNavbar />

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "lib/util";
 import { RoomStatus, RoomType } from "~/constants";
+import axios from "axios";
 
 const CLOUDINARY_UPLOAD_URL = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
@@ -31,6 +32,7 @@ export default function RoomFormPopup({
 }) {
   const [formData, setFormData] = useState<RoomCreateDTO>(initialRoomData);
   const [uploading, setUploading] = useState(false);
+  const [RoomType , setRoomType] = useState([])
 
   function handleChange(
     e: React.ChangeEvent<
@@ -85,6 +87,23 @@ export default function RoomFormPopup({
       data: [...pre.data , formData],
     }));
   }
+
+  useEffect(()=> {
+    async function GetTypeRoom(){
+      const response = await axios.get("http://192.168.3.235:8080/api/rooms/types", {
+        withCredentials: true,
+      });
+
+      // The actual user list is in response.data
+      const types = response.data;
+
+
+      // Log it to the console
+      console.log("Fetched users:", types);
+    }
+
+    GetTypeRoom()
+  } , []);
 
   return (
     <div

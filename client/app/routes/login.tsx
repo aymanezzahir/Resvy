@@ -1,46 +1,59 @@
 import { Link } from "react-router"; // ✅ corrected import
 import { useEffect, useState } from "react";
-import axios from "axios"
+import axios, { AxiosError } from "axios";
 
 export default function Login() {
   const [user, setUser] = useState({ username: "", password: "" });
 
-  async function getUser(){
-    const res =await axios.get("http://192.168.3.235:8080/api/users" )
+  async function getUsers() {
+    try {
+      // Make the GET request (withCookies if your API uses session cookies)
+      const response = await axios.get("http://192.168.3.235:8080/api/users", {
+        withCredentials: true,
+      });
 
-    
+      // The actual user list is in response.data
+      const users = response.data;
 
-    console.log(res)
+      // Log it to the console
+      console.log("Fetched users:", users);
 
-
+      // Return the array in case you want to use it elsewhere
+      return users;
+    } catch (error : AxiosError) {
+      // If the request fails, log the error details
+      console.error(
+        "Error fetching users:",
+        error.response?.status,
+        error.response?.data || error.message
+      );
+      throw error;
+    }
   }
   async function submitFunc(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
+    console.log(user)
     try {
-      const res = await fetch(import.meta.env.VITE_SERVER + "/login", {
-        method: "POST", // ✅ POST for form data
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user), // ✅ JSON-encoded body
-      });
+       const response = await axios.post(
+      "http://192.168.3.235:8080/api/auth/login", user,
+    );
 
-      if (!res.ok) {
-        throw new Error("Échec de connexion");
-      }
-
-      const data = await res.json();
+      const data = response.data
       console.log("Connexion réussie", data);
       // TODO: Save token or navigate
     } catch (err) {
       console.error("Erreur:", err);
-      alert("Nom d'utilisateur ou mot de passe invalide.");
+     
     }
   }
 
-  useEffect(()=>{
-    getUser();
+useEffect(()=>{
+    // Example usage:
+getUsers().then(users => {
+  console.log(users)
+}).catch(() => {
+  // Handle errors if needed
+});
   }, [])
 
   return (

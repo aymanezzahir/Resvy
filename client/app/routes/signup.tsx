@@ -1,9 +1,10 @@
+import axios from "axios";
 import checkformsignup from "lib/checksignupform";
 import { cn } from "lib/util";
 import { useState } from "react";
 import { Link } from "react-router";
 
-const initHide = {hide : true , message : ""}
+const initHide = { hide: true, message: "" };
 
 export default function Signup() {
   const [form, setForm] = useState({
@@ -13,30 +14,66 @@ export default function Signup() {
     password: "",
     cpassword: "",
   });
-  const [hideErrorMessage , setHideError] = useState<{hide : boolean, message : string}>(initHide);
+
+  const [hideErrorMessage, setHideError] = useState<{
+    hide: boolean;
+    message: string;
+  }>(initHide);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setForm((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setHideError(initHide)
-    // check 
-    const result = checkformsignup(form.email , form.username , form.password , form.cpassword)
+    setHideError(initHide);
 
-    if(!result.valid){
-        setHideError({
-            hide : false , 
-            message :result.message
-        })
+    const result = checkformsignup(
+      form.email,
+      form.username,
+      form.password,
+      form.cpassword
+    );
 
-        return;
+    if (!result.valid) {
+      setHideError({
+        hide: false,
+        message: result.message,
+      });
+      return;
     }
-    // Here you would send the data to backend or API
-    
-    alert("send request")
+
+    const Registration = {
+      fullName: form.fullname,
+      password: form.password,
+      email: form.email,
+      username: form.username,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://192.168.3.235:8080/api/users/register",
+        Registration,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("✅ Inscription réussie :", response.data);
+      alert("✅ Inscription réussie !");
+    } catch (error: any) {
+      console.error(
+        "❌ Erreur d'inscription :",
+        error.response?.data || error.message
+      );
+      setHideError({
+        hide: false,
+        message: error.response?.data?.message || "Erreur serveur",
+      });
+    }
   };
 
   return (
@@ -49,8 +86,10 @@ export default function Signup() {
           <img src="/assets/logo.png" alt="logo" width={30} />
           <h1 className="text-center font-bold text-4xl">Resvy</h1>
         </Link>
+
         <hr className="my-4 border-gray-500" />
         <ErrorFound {...hideErrorMessage} />
+
         {/* Nom complet */}
         <div className="mb-5">
           <label
@@ -164,14 +203,25 @@ export default function Signup() {
   );
 }
 
-function ErrorFound({hide = true , message} : {hide : boolean , message : string}){
-    return (
-        <div className={cn({
-            'hidden' : hide,
-            'flex' : !hide
-        } , "bg-red-400 p-3 rounded-2xl mb-2")}>
-            <img alt="error image" width={20} src="/assets/icons/error.svg"/>
-            <p>{message}</p>
-        </div>
-    )
+function ErrorFound({
+  hide = true,
+  message,
+}: {
+  hide: boolean;
+  message: string;
+}) {
+  return (
+    <div
+      className={cn(
+        {
+          hidden: hide,
+          flex: !hide,
+        },
+        "bg-red-400 p-3 rounded-2xl mb-2 items-center gap-2"
+      )}
+    >
+      <img alt="error image" width={20} src="/assets/icons/error.svg" />
+      <p>{message}</p>
+    </div>
+  );
 }
