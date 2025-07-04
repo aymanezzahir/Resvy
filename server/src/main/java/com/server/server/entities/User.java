@@ -1,5 +1,6 @@
 package com.server.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,8 +43,10 @@ public class User {
     private Instant createdAt;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private Set<Booking> bookings = new LinkedHashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Review> reviews = new LinkedHashSet<>();
 

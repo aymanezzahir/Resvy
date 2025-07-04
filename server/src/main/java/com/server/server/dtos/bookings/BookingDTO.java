@@ -1,8 +1,11 @@
 package com.server.server.dtos.bookings;
 
+import lombok.Data;
+
 import java.time.Instant;
 import java.time.LocalDate;
 
+@Data
 public class BookingDTO {
     private Long id;
     private Long userId;

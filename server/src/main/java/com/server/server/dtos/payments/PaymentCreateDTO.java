@@ -1,9 +1,11 @@
 package com.server.server.dtos.payments;
 
 import jakarta.validation.constraints.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
+@Data
 public class PaymentCreateDTO {
 
     @NotNull(message = "Booking ID is required")

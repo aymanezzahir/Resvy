@@ -2,9 +2,11 @@ package com.server.server.dtos.bookings;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 import java.time.LocalDate;
 
+@Data
 public class BookingCreateDTO {
 
     @NotNull(message = "Room ID is required")

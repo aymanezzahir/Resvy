@@ -35,7 +35,7 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
         User user = userMapper.toEntity(registrationDTO);
-        user.setRole("CUSTOMER");
+        user.setRole(registrationDTO.getRole() != null ? registrationDTO.getRole() : "ROLE_CUSTOMER");
 
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -122,20 +122,5 @@ public class UserService {
     @Transactional(readOnly = true)
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
-    }
-
-    @Transactional(readOnly = true)
-    public UserDTO login(UserLoginDTO loginDTO) {
-        User user = userRepository.findByUsername(loginDTO.getUsername());
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
-        }
-
-        // For now, plain text password check (replace with bcrypt or encoder in real usage)
-        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
-        }
-
-        return userMapper.toUserDTO(user);
     }
 }

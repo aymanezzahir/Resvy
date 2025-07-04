@@ -1,7 +1,12 @@
 package com.server.server.dtos.rooms;
 
-import java.math.BigDecimal;
+import lombok.Data;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+
+@Data
 public class RoomDTO {
     private Long id;
     private String roomNumber;
@@ -9,4 +14,7 @@ public class RoomDTO {
     private Integer floor;
     private BigDecimal price;
     private String description;
+    private RoomTypeDTO type;
+    private List<RoomImageDTO> images;
 }
+

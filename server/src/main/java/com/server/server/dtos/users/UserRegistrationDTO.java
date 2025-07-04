@@ -24,4 +24,8 @@ public class UserRegistrationDTO {
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
+
+    @Size(max = 20, message = "Role must not exceed 20 characters")
+    private String role; // Optional role field
+
 }
