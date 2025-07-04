@@ -16,7 +16,7 @@ export default function Mobilenav() {
     <div className="mobile-sidebar wrapper">
         <header>
             <Link to={"/"}>
-                <img src="/assets/icons/logo.svg" alt="logo" className="size-[30px]" />
+                <img src="/assets/logo.png" alt="logo" className="size-[30px]" />
                 <h1>Resvy</h1>
             </Link>
 

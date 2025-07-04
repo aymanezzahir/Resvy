@@ -10,6 +10,6 @@ export default [
         route("dashboard" , "routes/admin/dashboard.tsx"),
         route("all-users" , "routes/admin/all-user.tsx"),
         route("reservation" , "routes/admin/reservation.tsx"),
-
+        route("chambres" , "routes/admin/chambre.tsx")
     ])
 ] satisfies RouteConfig;
