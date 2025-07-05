@@ -50,10 +50,14 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Let all pre‑flights through
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Your public endpoints
                         .requestMatchers("/api/users/**"  , "/api/bookings/**" , "/api/payments" , "/api/rooms" , "/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+
                         // Everything else needs auth
                         .anyRequest().authenticated()
                 )
@@ -68,15 +72,16 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // During dev you can wildcard; in prod list ONLY your real front‑end origins
         config.setAllowedOriginPatterns(List.of("*"));
-        // Or, to lock it down to just your React host:
+
         config.setAllowedOriginPatterns(List.of("http://localhost:5173",
                 "http://127.0.0.1:5173" ,
                 "http://192.168.3.212:5173",
                 "http://localhost:5173",
                 "http://127.0.0.1:5173",
-                "http://192.168.3.235:5173"
+                "http://192.168.3.235:5173",
+                "http://192.168.221.61:5173",
+                "http://127.0.0.1:5173"
                 ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

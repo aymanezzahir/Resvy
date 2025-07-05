@@ -18,7 +18,6 @@ public class RoomController {
 
     private final RoomService roomService;
 
-    // Create a new room (Admin only)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<RoomDTO> createRoom(@Valid @RequestBody RoomCreateDTO roomCreateDTO) {
@@ -27,7 +26,6 @@ public class RoomController {
         return ResponseEntity.ok(roomDTO);
     }
 
-    // Update an existing room by ID (Admin only)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<RoomDTO> updateRoom(@PathVariable Long id,
@@ -37,7 +35,6 @@ public class RoomController {
         return ResponseEntity.ok(updatedRoom);
     }
 
-    // Get a specific room by ID
     @GetMapping("/{id}")
     public ResponseEntity<RoomDTO> getRoomById(@PathVariable Long id) {
         // Fetch and return the room, including type and images as per mappings in RoomService
@@ -54,7 +51,6 @@ public class RoomController {
         return ResponseEntity.ok(rooms);
     }
 
-    // Delete a specific room by ID (Admin only)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
@@ -63,11 +59,9 @@ public class RoomController {
         return ResponseEntity.noContent().build();
     }
 
-    // Get rooms by price range
     @GetMapping("/filter/price-range")
     public ResponseEntity<List<RoomDTO>> getRoomsByPriceRange(@RequestParam BigDecimal minPrice,
                                                               @RequestParam BigDecimal maxPrice) {
-        // Fetch rooms based on price range, leveraging service filters
         List<RoomDTO> rooms = roomService.getRoomsByPriceRange(minPrice, maxPrice);
         return ResponseEntity.ok(rooms);
     }

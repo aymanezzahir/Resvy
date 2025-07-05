@@ -33,27 +33,24 @@ public class RoomService {
         room.setDescription(roomCreateDTO.getDescription());
         room.setStatus(roomCreateDTO.getStatus() != null ? roomCreateDTO.getStatus() : "AVAILABLE");
 
-        // Find and associate the room type
         RoomType type = roomTypeRepository.findById(roomCreateDTO.getTypeId())
                 .orElseThrow(() -> new EntityNotFoundException("Room type not found with ID: " + roomCreateDTO.getTypeId()));
         room.setType(type);
 
-        // Save the room entity
-        final Room savedRoom = roomRepository.save(room); // Save room first before using it in the lambda
+        final Room savedRoom = roomRepository.save(room);
         if (roomCreateDTO.getImages() != null) {
             List<RoomImage> roomImages = roomCreateDTO.getImages()
                     .stream()
-                    .map(imageDTO -> mapToRoomImageEntity(imageDTO, savedRoom)) // Use the final variable
+                    .map(imageDTO -> mapToRoomImageEntity(imageDTO, savedRoom))
                     .collect(Collectors.toList());
 
             roomImageRepository.saveAll(roomImages);
-            savedRoom.setRoomImages(roomImages.stream().collect(Collectors.toSet())); // Update the room's image set
+            savedRoom.setRoomImages(roomImages.stream().collect(Collectors.toSet()));
         }
 
         return mapToDTO(room);
     }
 
-    // Update an existing room
 
     public RoomDTO updateRoom(Long roomId, RoomUpdateDTO roomUpdateDTO) {
         Room room = roomRepository.findById(roomId)
@@ -81,7 +78,6 @@ public class RoomService {
             room.setType(newType);
         }
 
-        // Update images if provided
         if (roomUpdateDTO.getImages() != null) {
             // Delete existing room images and replace with updated ones
             roomImageRepository.deleteAllByRoomId(room.getId());
