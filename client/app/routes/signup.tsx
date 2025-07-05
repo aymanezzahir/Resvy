@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from "lib/axios";
 import checkformsignup from "lib/checksignupform";
 import { cn } from "lib/util";
 import { useState } from "react";
@@ -52,15 +53,7 @@ export default function Signup() {
     };
 
     try {
-      const response = await axios.post(
-        import.meta.env.VITE_SERVER2+"/api/users/register",
-        Registration,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axiosInstance.post("/api/users/register",Registration,);
 
       console.log("✅ Inscription réussie :", response.data);
       alert("✅ Inscription réussie !");

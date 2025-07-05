@@ -135,8 +135,8 @@
 				<version>${flyway.version}</version>
 				<configuration>
 					<url>jdbc:mysql://localhost:3306/hotel</url>
-					<user>youpi</user>
-					<password>Stux.neT321</password>
+					<user>root</user>
+					<password>07071996</password>
 					<cleanDisabled>false</cleanDisabled>
 				</configuration>
 			</plugin>
@@ -154,6 +154,7 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 

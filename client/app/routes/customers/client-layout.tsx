@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from "lib/axios";
 import { Outlet, redirect } from "react-router";
 
 import {  RootNavbar } from "~/components";
@@ -8,11 +9,7 @@ export async function clientLoader() {
     // const user = await axios.get('');
 
      
-        const res = await axios.post(
-          "http://192.168.3.235:8080/api/auth/userdetails",
-          null,
-          { withCredentials: true }
-        );
+        const res = await axiosInstance.post("api/auth/userdetails",null,{ withCredentials: true });
         const data: UserDetailsResponse = res.data;
         
       

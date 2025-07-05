@@ -1,6 +1,7 @@
 import { Link, Navigate, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import axiosInstance from "lib/axios";
 
 interface UserDetailsResponse {
   role: "ROLE_ADMIN" | "ROLE_CUSTOMER";
@@ -16,13 +17,9 @@ export default function Login() {
   async function submitFunc(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      await axios.post(
-        import.meta.env.VITE_SERVER2+"/api/auth/login",
-        user,
-        { withCredentials: true }
-      );
+      await axiosInstance.post("/api/auth/login",user);
 
-      
+      const res = await axiosInstance.post("/api/auth/userdetails" ,null , {withCredentials:true})
         navigate("/");
       
     } catch (err) {

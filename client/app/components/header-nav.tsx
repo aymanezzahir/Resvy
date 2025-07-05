@@ -10,6 +10,7 @@ import { cn } from "~/../lib/util";
 import DropdownUsername from "./dropdown/header-username";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import axiosInstance from "lib/axios";
 
 export default function RootNavbar() {
   const [user , setUser] = useState<UserDetailsResponse | null>(null)
@@ -24,8 +25,9 @@ export default function RootNavbar() {
 
   useEffect(()=> {
     async function getUserData(){
-      const res = await axios.post(import.meta.env.VITE_SERVER2 + "/api/auth/userdetails" , null , {withCredentials : true});
+      const res = await axiosInstance.post("/api/auth/userdetails" , null );
       const user : UserDetailsResponse = res.data
+      console.log(user)
       setUser(user);
     }
 
