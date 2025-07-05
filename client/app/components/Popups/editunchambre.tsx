@@ -294,7 +294,7 @@ export default function EditChambre({
                     ✕
                   </button>
                   <img
-                    src={e}
+                    src={e.url}
                     alt="Uploaded"
                     className="mt-2 rounded border w-full"
                   />

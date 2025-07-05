@@ -1,8 +1,9 @@
+import axios from "axios";
 import { cn } from "lib/util";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
-export default function DropdownUsername({ user }: { user: UserDTO }) {
+export default function DropdownUsername({ user }: { user: UserDetailsResponse | null }) {
   // stats
   const [hide, setHide] = useState<boolean>(true);
   const navigate = useNavigate();
@@ -13,12 +14,15 @@ export default function DropdownUsername({ user }: { user: UserDTO }) {
     { name: "Reservation", href: "/reservation" },
     { name: "Utilisateurs", href: "/all-users" },
   ];
-  if (user.role != "admin") {
+  if (user?.role != "ROLE_ADMIN") {
     nav = [{ name: "Historique", href: "/user/historique" } , { name: "Parametre", href: "/user/settings" }];
   }
 
   const handleLogout = async () => {
-    alert("log out");
+      const response = await axios.post(
+          "http://192.168.3.235:8080/api/auth/logout", null,{withCredentials : true}
+        );
+    navigate("/")
   };
   return (
     <div className="relative">
@@ -29,7 +33,7 @@ export default function DropdownUsername({ user }: { user: UserDTO }) {
         type="button"
       >
         <img src="/assets/icons/user.svg" className="fill-white" width={25} />
-        <p className="font-bold text-lg">{user.username + " "}</p>
+        <p className="font-bold text-lg">{user?.username + " "}</p>
         <svg
           className="w-2.5 h-2.5 ms-3"
           aria-hidden="true"

@@ -14,7 +14,7 @@ export const initialRoomData: RoomCreateDTO = {
   price: 0,
   description: "",
   status: "Disponible",
-  imgURL: [],
+  images: [],
   type: "",
 };
 
@@ -32,7 +32,7 @@ export default function RoomFormPopup({
 }) {
   const [formData, setFormData] = useState<RoomCreateDTO>(initialRoomData);
   const [uploading, setUploading] = useState(false);
-  const [RoomType , setRoomType] = useState([])
+  const [RoomType, setRoomType] = useState<RoomType[]>([]);
 
   function handleChange(
     e: React.ChangeEvent<
@@ -68,7 +68,10 @@ export default function RoomFormPopup({
         if (data.secure_url) {
           setFormData((prev) => ({
             ...prev,
-            imgURL: [...prev.imgURL, data.secure_url],
+            images: [
+              ...prev.images,
+              { url: data.secure_url, isPrimary: false },
+            ],
           }));
         }
       } catch (err) {
@@ -79,31 +82,44 @@ export default function RoomFormPopup({
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    console.log("Room created:", formData);
-    setVisible((pre)=> ({
+
+    setVisible((pre) => ({
       visible: false,
-      data: [...pre.data , formData],
+      data: [...pre.data, formData],
     }));
+
+    const response = await axios.post(
+      import.meta.env.VITE_SERVER2+"/api/rooms",
+      formData,
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log(formData);
   }
 
-  useEffect(()=> {
-    async function GetTypeRoom(){
-      const response = await axios.get("http://192.168.3.235:8080/api/rooms/types", {
-        withCredentials: true,
-      });
+  useEffect(() => {
+    async function GetTypeRoom() {
+      const response = await axios.get(
+        import.meta.env.VITE_SERVER2+"/api/rooms/types",
+        {
+          withCredentials: true,
+        }
+      );
 
       // The actual user list is in response.data
       const types = response.data;
-
+      setRoomType(types);
 
       // Log it to the console
       console.log("Fetched users:", types);
     }
 
-    GetTypeRoom()
-  } , []);
+    GetTypeRoom();
+  }, []);
 
   return (
     <div
@@ -157,14 +173,16 @@ export default function RoomFormPopup({
                 Type de Chambre
               </label>
               <select
-                id="status"
-                name="status"
-                value={formData.type}
+                id="typeId"
+                name="typeId"
+                value={formData.typeId}
                 onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
               >
-                {RoomType.map((e , i) => (
-                  <option key={i} value={e}>{e}</option>
+                {RoomType.map((e, i) => (
+                  <option key={i} value={e.id}>
+                    {e.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -218,8 +236,10 @@ export default function RoomFormPopup({
                 onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
               >
-                {RoomStatus.map((e , i) => (
-                  <option key={i} value={e}>{e}</option>
+                {RoomStatus.map((e, i) => (
+                  <option key={i} value={e}>
+                    {e}
+                  </option>
                 ))}
               </select>
             </div>
@@ -291,14 +311,14 @@ export default function RoomFormPopup({
                 <p className="text-sm text-blue-600 mt-1">Chargement...</p>
               )}
 
-              {formData.imgURL.map((e , i) => (
+              {formData.images.map((e, i) => (
                 <div key={i} className="col-span-1 relative">
                   <button
                     type="button"
                     onClick={() =>
                       setFormData((pre) => ({
                         ...pre,
-                        imgURL: pre.imgURL.filter((item) => item !== e),
+                        images: pre.images.filter((item) => item !== e),
                       }))
                     }
                     className="text-red-500 font-black cursor-pointer absolute right-2 top-2 text-lg"
@@ -306,7 +326,7 @@ export default function RoomFormPopup({
                     ✕
                   </button>
                   <img
-                    src={e}
+                    src={e.url}
                     alt="Uploaded"
                     className="mt-2 rounded border w-full"
                   />

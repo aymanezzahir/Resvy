@@ -33,11 +33,11 @@ declare interface RoomCreateDTO {
   price: number; // required, must be >= 0
   description?: string;
   status?: string; // optional, default can be handled in backend
-  imgURL: string[]; // optional image URL
+  images: {url : string , isPrimary : boolean}[]; // optional image URL
   type?: string; // optional, name of the room type
 }
 
-de;
+
 
 declare interface StatsCard {
   headerTitle: string;
@@ -63,3 +63,21 @@ declare interface UserDTO  {
   role: string;
   createdAt: Date;
 };
+
+ type Role = 'ROLE_ADMIN' | 'ROLE_CUSTOMER';
+
+declare interface UserDetailsResponse {
+  id: number;
+  username: string;
+  email: string;
+  fullName: string;
+  role: Role;
+  createdAt: string | null;
+}
+
+declare interface RoomType {
+  id: number;
+  name: string;
+  maxOccupancy: number;
+  description: string;
+}

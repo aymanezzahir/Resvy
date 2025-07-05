@@ -8,23 +8,29 @@ import {
 
 import { cn } from "~/../lib/util";
 import DropdownUsername from "./dropdown/header-username";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function RootNavbar() {
+  const [user , setUser] = useState<UserDetailsResponse | null>(null)
   const location = useLocation();
   const params = useParams();
   //   const user = useLoaderData();
   const navigate = useNavigate();
   const handleLogout = async () => {
-    navigate("/sign-in");
+    navigate("/logout");
   };
-  const user: UserDTO = {
-    id: 101,
-    username: "clairedu",
-    email: "claire.dupont@example.com",
-    fullName: "Claire Dupont",
-    role: "Client",
-    createdAt: new Date("2024-12-01T10:30:00Z"),
-  };
+  
+
+  useEffect(()=> {
+    async function getUserData(){
+      const res = await axios.post(import.meta.env.VITE_SERVER2 + "/api/auth/userdetails" , null , {withCredentials : true});
+      const user : UserDetailsResponse = res.data
+      setUser(user);
+    }
+
+    getUserData();
+  } , []);
   return (
     <nav className={cn("w-full fixed z-50 glassmorphism")}>
       <header className="root-nav wrapper">
@@ -33,11 +39,12 @@ export default function RootNavbar() {
           <h1>Resvy</h1>
         </Link>
 
+
         {!user ? (
           <LogoutPerpective />
         ) : (
           <div className="flex items-center gap-8">
-            {user.role == "admin" ? (
+            {user.role == "ROLE_ADMIN" ? (
               <AdminPerpective />
             ) : (
               <CustomerPerspective />

@@ -4,31 +4,19 @@ import { NavBar, Mobilenav } from "~/components";
 import axios from "axios";
 
 export async function clientLoader() {
-  try {
-    // const user = await axios.get('');
+  // const user = await axios.get('');
 
-    const user: UserDTO = {
-      id: 101,
-      username: "clairedu",
-      email: "claire.dupont@example.com",
-      fullName: "Claire Dupont",
-      role: "admin",
-      createdAt: new Date("2024-12-01T10:30:00Z"),
-    };
+  const res = await axios.post(
+    "http://192.168.3.235:8080/api/auth/userdetails",
+    null,
+    { withCredentials: true }
+  );
+  const data: UserDetailsResponse = res.data;
 
-    if (!user) return redirect("/sign-in");
+  console.log(data);
 
-    if (user?.role != "admin") {
-      return redirect("/");
-    }
-
-    return user;
-  } catch (e) {
-    console.log("Error in clientLoader", e);
-    return redirect("/sign-in");
-  }
+  return data;
 }
-
 export default function AdminLayout() {
   return (
     <div className="admin-layout">

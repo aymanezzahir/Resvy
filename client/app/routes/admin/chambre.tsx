@@ -1,4 +1,5 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { AjouteUnChambre, Header } from "~/components";
 import ChambreCard from "~/components/chambreCard";
 export function meta() {
@@ -16,6 +17,28 @@ export default function Chambre() {
     visible: boolean;
     data: RoomCreateDTO[];
   }>({ visible: false, data: [] });
+
+    useEffect(()=> {
+    async function getAllRoom(){
+       try {
+        const res = await axios.get(
+          "http://192.168.3.235:8080/api/rooms",
+      
+          { withCredentials: true }
+        );
+        const data = res.data;
+        console.log(data)
+       setvisisble(pre=> ({
+        ...pre , data
+       }))
+      } catch (err) {
+        // Not logged in, that's fine
+      } 
+    }
+
+    getAllRoom()
+  } , []);
+
 
   return (
     <main className="dashboard wrapper">

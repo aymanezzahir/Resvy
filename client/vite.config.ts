@@ -4,18 +4,19 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-const sentryConfig: SentryReactRouterBuildOptions = {
-  org: "resvy",
-  project: "javascript-react",
-
-  // An auth token is required for uploading source maps.
-  authToken: "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"
-  
-};
 
 export default defineConfig(config => {
   return {
-  plugins: [reactRouter(),sentryReactRouter(sentryConfig, config) , tailwindcss() , tsconfigPaths()],
+    server: {
+    proxy: {
+      '/api': {
+        target: 'http://192.168.3.235:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
+  plugins: [reactRouter() ,  tailwindcss() , tsconfigPaths()],
   ssr : {
     noExternal : [/@syncfusion/]
   }

@@ -24,7 +24,7 @@ const ChambreCard = ({
     self: props,
   });
 
-  const { roomNumber, typeId, floor, imgURL, description, price, status } = props;
+  const { roomNumber, typeId, floor, images, description, price, status } = props;
 
   return (
     <>
@@ -39,9 +39,9 @@ const ChambreCard = ({
         className="trip-card flex flex-col rounded-lg shadow-md overflow-hidden bg-white hover:shadow-lg transition-shadow w-full max-w-sm"
         type="button"
       >
-        {imgURL && imgURL.length > 0 ? (
+        {images && images.length > 0 ? (
           <img
-            src={imgURL[0]}
+            src={images[0].url}
             alt={`Photo chambre ${roomNumber}`}
             className="w-full h-40 object-cover"
           />
@@ -67,7 +67,7 @@ const ChambreCard = ({
         </article>
       </button>
 
-      <EditChambre visible={visible} setVisible={setVisible} setData={setData} />
+      
     </>
   );
 };
