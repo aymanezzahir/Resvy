@@ -1,9 +1,13 @@
 package com.server.server.dtos.rooms;
 
+
 import jakarta.validation.constraints.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+@Data
 public class RoomCreateDTO {
 
     @NotBlank(message = "Room number is required")
@@ -11,7 +15,7 @@ public class RoomCreateDTO {
     private String roomNumber;
 
     @NotNull(message = "Room type ID is required")
-    private Long typeId;
+    private Long typeId; // We still use ID for associations created at this stage.
 
     @NotNull(message = "Floor is required")
     @Min(value = 0, message = "Floor cannot be negative")
@@ -25,4 +29,7 @@ public class RoomCreateDTO {
 
     // Optional, defaults to AVAILABLE in entity
     private String status;
+
+    // Images can be uploaded via subsequent requests, but optionally accept image data here
+    private List<RoomImageDTO> images;
 }
