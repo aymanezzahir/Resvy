@@ -33,16 +33,14 @@
                         new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword())
                 );
 
-                // Set Authentication in SecurityContextHolder
                 SecurityContextHolder.getContext().setAuthentication(auth);
 
-                // Persist authentication in session using HttpSessionSecurityContextRepository
                 SecurityContextImpl securityContext = new SecurityContextImpl(auth);
                 HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
                 securityContextRepository.saveContext(securityContext, request, response);
 
-                // Access the session and return login response
                 var session = request.getSession(true);
+                session.setAttribute("userDetails", auth.getPrincipal());
                 CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
 
                 System.out.println("CURRENT USER: " + auth.getName());
