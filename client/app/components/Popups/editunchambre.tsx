@@ -10,6 +10,7 @@ const UPLOAD_PRESET = import.meta.env.VITE_UPLOAD_RESET;
 export default function EditChambre({
   visible,
   setVisible,
+  setData,
 }: {
   visible: { visible: boolean; data: RoomCreateDTO[]; self: RoomCreateDTO };
   setVisible: React.Dispatch<
@@ -19,6 +20,10 @@ export default function EditChambre({
       self: RoomCreateDTO;
     }>
   >;
+  setData :  React.Dispatch<React.SetStateAction<{
+    visible: boolean;
+    data: RoomCreateDTO[];
+}>> 
 }) {
   const [formData, setFormData] = useState<RoomCreateDTO>(visible.self);
   const [uploading, setUploading] = useState(false);
@@ -78,6 +83,13 @@ export default function EditChambre({
         e.roomNumber === pre.self.roomNumber ? formData : e
       ),
     }));
+
+    setData(pre =>({
+      ...pre,
+      data: pre.data.map((e) =>
+        e.roomNumber === visible.self.roomNumber ? formData : e
+      ),
+    }))
   }
 
   return (
@@ -139,8 +151,8 @@ export default function EditChambre({
                 onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
               >
-                {RoomType.map((e) => (
-                  <option value={e}>{e}</option>
+                {RoomType.map((e , i) => (
+                  <option  key={i + 10} value={e}>{e}</option>
                 ))}
               </select>
             </div>
@@ -194,8 +206,8 @@ export default function EditChambre({
                 onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
               >
-                {RoomStatus.map((e) => (
-                  <option value={e}>{e}</option>
+                {RoomStatus.map((e , i) => (
+                  <option key={i} value={e}>{e}</option>
                 ))}
               </select>
             </div>
@@ -267,8 +279,8 @@ export default function EditChambre({
                 <p className="text-sm text-blue-600 mt-1">Chargement...</p>
               )}
 
-              {formData.imgURL.map((e) => (
-                <div className="col-span-1 relative">
+              {formData.imgURL.map((e , i) => (
+                <div key={i + 999} className="col-span-1 relative">
                   <button
                     type="button"
                     onClick={() =>

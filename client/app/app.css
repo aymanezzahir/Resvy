@@ -562,3 +562,20 @@ body {
   left: 50%;
   transform: translate(-50% , -50%);
 }
+
+.e-step-completed .e-step ,
+.e-step-inprogress .e-step{
+  background-color: var(--color-primary-500)  !important;
+}
+
+.e-label{
+  color: var(--color-primary-500)  !important;
+}
+.e-stepper .e-stepper-progressbar > .e-progressbar-value{
+  background-color: var(--color-primary-500)  !important;
+}
+
+.e-stepper:not(.e-steps-focus) .e-step-selected .e-step {
+  -webkit-box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-primary-500) , 0 0 0 8px #fff !important ;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-primary-500) , 0 0 0 8px #fff !important;
+}

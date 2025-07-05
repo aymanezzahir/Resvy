@@ -50,8 +50,36 @@ export function calculateTotal(start : number, nbr : number) {
   return total;
 }
 
-// Example usage:
-console.log(calculateTotal(10, 3)); // start will be capped at 5, so output: 5 + (20 * 2) = 45
+export function calculateRoomPriceByType(
+  roomType: string,
+  checkIn: string,
+  checkOut: string,
+  baseRatePerNight: number = 100
+): number {
+  const roomStars: Record<string, number> = {
+    "Single Room": 1,
+    "Double Room": 2,
+    "Twin Room": 2,
+    "Deluxe Room": 3,
+    "Family Suite": 4,
+    "Presidential Suite": 5,
+    "Studio Room": 3,
+    "Accessible Room": 3,
+  };
+
+  const star = roomStars[roomType] ?? 1; // default to 1 star if not found
+
+  const multipliers = [0.8, 1.0, 1.2, 1.5, 1.8, 2.2];
+  const multiplier = multipliers[star];
+
+  const start = new Date(checkIn);
+  const end = new Date(checkOut);
+  const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+
+  
+
+  return Math.round(baseRatePerNight * days * multiplier * 100) / 100;
+}
 
 
 export function getFirstWord(input: string = ""): string {
@@ -80,8 +108,3 @@ export const calculateTrendPercentage = (
     }
 };
 
-export const formatKey = (key: keyof TripFormData) => {
-    return key
-        .replace(/([A-Z])/g, " $1")
-        .replace(/^./, (str) => str.toUpperCase());
-};

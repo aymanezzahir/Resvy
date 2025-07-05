@@ -3,7 +3,7 @@ import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
 import { cn, parseTripData } from "~/../lib/util";
 import { Header, RootNavbar } from "~/components";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { PagerComponent } from "@syncfusion/ej2-react-grids";
 import type { Route } from "../+types/root";
@@ -15,7 +15,7 @@ const FeaturedDestination = ({
   title,
   activityCount,
   bgImage,
-}: DestinationProps) => (
+}: CardProps) => (
   <section
     className={cn(
       "rounded-[14px] overflow-hidden bg-cover bg-center size-full min-w-[280px]",
@@ -41,8 +41,6 @@ const FeaturedDestination = ({
           >
             {title}
           </h2>
-
-          
         </article>
       </article>
     </div>
@@ -53,6 +51,7 @@ const TravelPage = ({ loaderData }: Route.ComponentProps) => {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState("1");
+  const [today, setToday] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,8 +61,11 @@ const TravelPage = ({ loaderData }: Route.ComponentProps) => {
       `Réservation du ${checkIn} au ${checkOut} pour ${guests} personne(s).`
     );
   };
+  useEffect(() => {
+    const now = new Date();
+    setToday(now.toISOString().split("T")[0]); // Only YYYY-MM-DD
+  }, []);
 
-  
   return (
     <div>
       <RootNavbar />
@@ -84,28 +86,30 @@ const TravelPage = ({ loaderData }: Route.ComponentProps) => {
                   </p>
                 </article>
 
-                <form
-                  onSubmit={handleSubmit}
-                  className="flex flex-col gap-3"
-                >
+                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                   <div className="grid grid-cols-3">
-                    <input
-                      type="date"
-                      min={new Date().toISOString()}
-                      value={checkIn}
-                      onChange={(e) => setCheckIn(e.target.value)}
-                      className="p-2 rounded text-black"
-                      required
-                    />
+                    {today && (
+                      <input
+                        type="date"
+                        min={today}
+                        value={checkIn}
+                        onChange={(e) => setCheckIn(e.target.value)}
+                        className="p-2 rounded text-black"
+                        required
+                      />
+                    )}
 
-                    <input
-                      type="date"
-                      value={checkOut}
-                      min={new Date().toISOString().split("T")[0]}
-                      onChange={(e) => setCheckOut(e.target.value)}
-                      className="p-2 rounded text-black"
-                      required
-                    />
+                    {today && (
+                      <input
+                        type="date"
+                        min={today}
+                        value={checkOut}
+                        onChange={(e) => setCheckOut(e.target.value)}
+                        className="p-2 rounded text-black"
+                        required
+                      />
+                    )}
+
                     <select
                       value={guests}
                       onChange={(e) => setGuests(e.target.value)}
@@ -118,7 +122,7 @@ const TravelPage = ({ loaderData }: Route.ComponentProps) => {
                     </select>
                   </div>
                   <ButtonComponent
-                    type="button"
+                    type="submit"
                     className="button-class  !h-11 !w-full lg:!w-[240px]"
                   >
                     <span className="p-16-semibold text-white">Réserver</span>
@@ -206,8 +210,8 @@ const TravelPage = ({ loaderData }: Route.ComponentProps) => {
             </Link>
 
             <div>
-              {["Terms & Conditions", "Privacy Policy"].map((item) => (
-                <Link to="/" key={item}>
+              {["Terms & Conditions", "Privacy Policy"].map((item , i) => (
+                <Link to="/" key={i + 99}>
                   {item}
                 </Link>
               ))}

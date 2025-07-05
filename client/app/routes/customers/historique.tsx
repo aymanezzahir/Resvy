@@ -1,6 +1,7 @@
 import {
   ColumnDirective,
   ColumnsDirective,
+  Filter,
   GridComponent,
   Search,
   Toolbar,
@@ -11,7 +12,7 @@ import { EditReservationPopup, Header } from "~/components";
 import { reservations } from "~/constants";
 
 import { useState } from "react";
-export default function Reservation() {
+export default function Historique() {
   const [visible, setvisisble] = useState<{
     visible: boolean;
     selectedID: string | null;
@@ -21,7 +22,7 @@ export default function Reservation() {
     <main className="wrapper all-users">
       <Header
         title="Carnet de réservations 📖"
-        description="Consultez, gérez et organisez toutes les réservations de vos clients."
+        description=""
       />
 
       <GridComponent
@@ -34,40 +35,7 @@ export default function Reservation() {
       >
         <Inject services={[ Search , Toolbar]} />
         <ColumnsDirective>
-          <ColumnDirective
-            field=""
-            headerText=""
-            width="70"
-            textAlign="Left"
-            template={(props: Reservation) => (
-              <button
-                className="cursor-pointer"
-                onClick={() =>
-                  setvisisble(() => ({
-                    visible: true,
-                    data: reservations,
-                    selectedID: props.id,
-                  }))
-                }
-              >
-                <img width={30} src="/assets/icons/edit.svg" />
-              </button>
-            )}
-          />
-          <ColumnDirective
-            field="name"
-            headerText="Nom complet"
-            width="200"
-            textAlign="Left"
-            filter={{ type: "Menu" }}
-            template={(props: Reservation) => <span>{props.fullName}</span>}
-          />
-          <ColumnDirective
-            field="phone"
-            headerText="Téléphone"
-            width="200"
-            textAlign="Left"
-          />
+          
           <ColumnDirective
             field="numberOfGuests"
             headerText="nbr"

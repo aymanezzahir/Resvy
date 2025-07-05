@@ -1,41 +1,16 @@
 import { useState } from "react";
 import EditChambre from "./Popups/editunchambre";
+import { Link } from "react-router";
 
-const ChambreCard = ({
-  data,
-  setData,
-  ...props
-}: RoomCreateDTO & {
-  data: RoomCreateDTO[];
-  setData: React.Dispatch<
-    React.SetStateAction<{
-      visible: boolean;
-      data: RoomCreateDTO[];
-    }>
-  >;
-}) => {
-  const [visible, setVisible] = useState<{
-    visible: boolean;
-    data: RoomCreateDTO[];
-    self: RoomCreateDTO;
-  }>({
-    visible: false,
-    data: data,
-    self: props,
-  });
+const ChambreCardClient = ({data} :{data : RoomCreateDTO}) => {
+  
 
-  const { roomNumber, typeId, floor, imgURL, description, price, status } = props;
+  const { roomNumber, typeId, floor, imgURL, description, price, status } = data;
 
   return (
     <>
-      <button
-        onClick={() =>
-          setVisible({
-            visible: true,
-            data: data,
-            self: props,
-          })
-        }
+      <Link
+        to={`/reserve?roomNumber=`}
         className="trip-card flex flex-col rounded-lg shadow-md overflow-hidden bg-white hover:shadow-lg transition-shadow w-full max-w-sm"
         type="button"
       >
@@ -65,11 +40,11 @@ const ChambreCard = ({
             {price} €
           </div>
         </article>
-      </button>
+      </Link>
 
-      <EditChambre visible={visible} setVisible={setVisible} setData={setData} />
+      
     </>
   );
 };
 
-export default ChambreCard;
+export default ChambreCardClient;

@@ -78,7 +78,7 @@ getUsers().then(users => {
             Nom d'utilisateur
           </label>
           <input
-            type="text" // ✅ corrected
+            type="text" 
             id="username"
             value={user.username}
             onChange={(e) =>

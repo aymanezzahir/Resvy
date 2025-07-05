@@ -163,8 +163,8 @@ export default function RoomFormPopup({
                 onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
               >
-                {RoomType.map((e) => (
-                  <option value={e}>{e}</option>
+                {RoomType.map((e , i) => (
+                  <option key={i} value={e}>{e}</option>
                 ))}
               </select>
             </div>
@@ -218,8 +218,8 @@ export default function RoomFormPopup({
                 onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
               >
-                {RoomStatus.map((e) => (
-                  <option value={e}>{e}</option>
+                {RoomStatus.map((e , i) => (
+                  <option key={i} value={e}>{e}</option>
                 ))}
               </select>
             </div>
@@ -291,8 +291,8 @@ export default function RoomFormPopup({
                 <p className="text-sm text-blue-600 mt-1">Chargement...</p>
               )}
 
-              {formData.imgURL.map((e) => (
-                <div className="col-span-1 relative">
+              {formData.imgURL.map((e , i) => (
+                <div key={i} className="col-span-1 relative">
                   <button
                     type="button"
                     onClick={() =>
