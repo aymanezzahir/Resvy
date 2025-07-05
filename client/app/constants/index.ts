@@ -16,17 +16,12 @@ export const sidebarItems = [
   },
   
   {
-    id: 2,
+    id: 3,
     icon: "/assets/icons/bed.svg",
     label: "Chambres",
     href: "/chambres",
   },
-  {
-    id: 2,
-    icon: "/assets/icons/cutlery.svg",
-    label: "Menu",
-    href: "/menu",
-  },
+
 
   {
     id: 4,
@@ -116,12 +111,7 @@ export const groupTypes = ["Solo", "Couple", "Family", "Friends", "Business"];
 
 export const footers = ["Terms & Condition", "Privacy Policy"];
 
-export const selectItems = [
-  "groupType",
-  "travelStyle",
-  "interest",
-  "budget",
-] as (keyof TripFormData)[];
+
 
 
 export const userXAxis: AxisModel = { valueType: "Category", title: "📅 Jour de la semaine" };

@@ -1,60 +1,61 @@
-import { Link } from "react-router"; // ✅ corrected import
+import { Link, Navigate, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
+
+interface UserDetailsResponse {
+  role: "ROLE_ADMIN" | "ROLE_CUSTOMER";
+  // Add other fields if needed
+}
 
 export default function Login() {
   const [user, setUser] = useState({ username: "", password: "" });
+  const [userDetails, setUserDetails] = useState<UserDetailsResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  async function getUsers() {
-    try {
-      // Make the GET request (withCookies if your API uses session cookies)
-      const response = await axios.get("http://192.168.3.235:8080/api/users", {
-        withCredentials: true,
-      });
-
-      // The actual user list is in response.data
-      const users = response.data;
-
-      // Log it to the console
-      console.log("Fetched users:", users);
-
-      // Return the array in case you want to use it elsewhere
-      return users;
-    } catch (error : AxiosError) {
-      // If the request fails, log the error details
-      console.error(
-        "Error fetching users:",
-        error.response?.status,
-        error.response?.data || error.message
-      );
-      throw error;
-    }
-  }
   async function submitFunc(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(user)
     try {
-       const response = await axios.post(
-      "http://192.168.3.235:8080/api/auth/login", user,
-    );
+      await axios.post(
+        import.meta.env.VITE_SERVER2+"/api/auth/login",
+        user,
+        { withCredentials: true }
+      );
 
-      const data = response.data
-      console.log("Connexion réussie", data);
-      // TODO: Save token or navigate
+      
+        navigate("/");
+      
     } catch (err) {
-      console.error("Erreur:", err);
-     
+      alert(err)
     }
   }
 
-useEffect(()=>{
-    // Example usage:
-getUsers().then(users => {
-  console.log(users)
-}).catch(() => {
-  // Handle errors if needed
-});
-  }, [])
+  useEffect(() => {
+    async function fetchSessionUser() {
+      try {
+        const res = await axios.post(
+          import.meta.env.VITE_SERVER2+"/api/auth/userdetails",
+          null,
+          { withCredentials: true }
+        );
+        const data: UserDetailsResponse = res.data;
+        setUserDetails(data);
+      } catch (err) {
+       
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchSessionUser();
+  }, []);
+
+  // If session already active, redirect
+  if (!loading && userDetails) {
+    return userDetails.role === "ROLE_ADMIN"
+      ? <Navigate to="/dashboard" />
+      : <Navigate to="/user/chambre" />;
+  }
 
   return (
     <div className="signin w-screen h-screen">
@@ -71,52 +72,39 @@ getUsers().then(users => {
 
         {/* Username */}
         <div className="mb-5">
-          <label
-            htmlFor="username"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
+          <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900">
             Nom d'utilisateur
           </label>
           <input
-            type="text" // ✅ corrected
+            type="text"
             id="username"
             value={user.username}
-            onChange={(e) =>
-              setUser((prev) => ({ ...prev, username: e.target.value }))
-            }
+            onChange={(e) => setUser(prev => ({ ...prev, username: e.target.value }))}
             placeholder="ex (ayman2)"
             required
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
           />
         </div>
 
         {/* Password */}
         <div className="mb-5">
-          <label
-            htmlFor="password"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
+          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">
             Mot de passe
           </label>
           <input
             type="password"
             id="password"
             value={user.password}
-            onChange={(e) =>
-              setUser((prev) => ({ ...prev, password: e.target.value }))
-            }
+            onChange={(e) => setUser(prev => ({ ...prev, password: e.target.value }))}
             required
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
           />
         </div>
 
         {/* Forgot password */}
         <p className="text-sm mt-4">
           Mot de passe oublié ?{" "}
-          <a
-            href="/reset-password"
-            className="text-primary-100 underline hover:opacity-80"
-          >
+          <a href="/reset-password" className="text-primary-100 underline hover:opacity-80">
             Réinitialisez-le ici
           </a>
         </p>
@@ -125,13 +113,13 @@ getUsers().then(users => {
         <div className="flex justify-between gap-4">
           <button
             type="submit"
-            className="text-white cursor-pointer mt-3 bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-100 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+            className="text-white cursor-pointer mt-3 bg-primary-500 hover:bg-primary-600 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5"
           >
             Login
           </button>
           <Link
             to="/signup"
-            className="text-white mt-3 bg-primary-100 hover:bg-primary-500 focus:ring-4 focus:outline-none focus:ring-primary-100 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+            className="text-white mt-3 bg-primary-100 hover:bg-primary-500 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5"
           >
             S'inscrire
           </Link>

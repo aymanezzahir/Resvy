@@ -53,7 +53,7 @@ export default function Signup() {
 
     try {
       const response = await axios.post(
-        "http://192.168.3.235:8080/api/users/register",
+        import.meta.env.VITE_SERVER2+"/api/users/register",
         Registration,
         {
           headers: {
