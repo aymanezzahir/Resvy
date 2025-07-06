@@ -7,9 +7,25 @@ import {
   Toolbar,
   Inject,
 } from "@syncfusion/ej2-react-grids";
-import { calculateTotal, cn, formatDate } from "lib/util";
+
+import axiosInstance from "lib/axios";
+import { useEffect, useState } from "react";
 
 export default function AllUser() {
+  const [users , setUsers] = useState<UserDetailsResponse[]>([])
+  useEffect(() => {
+      const getData = async () => {
+        try {
+          const data = await axiosInstance.get("/api/users/all");
+          console.log(data.data)
+          setUsers(data.data);
+        } catch (err: any) {
+          console.error(err);
+        } 
+      };
+  
+      getData();
+    }, []);
   return (
     <main className="dashboard wrapper">
       <Header
@@ -18,7 +34,7 @@ export default function AllUser() {
       />
 
       <GridComponent
-        dataSource={[]}
+        dataSource={users}
         allowFiltering={true}
         allowPaging={true}
         allowSorting={true}
@@ -45,27 +61,31 @@ export default function AllUser() {
           />
           <ColumnDirective
             field="name"
+            headerText="Nom Utilisateur"
+            width="200"
+            textAlign="Left"
+            template={(props: UserDetailsResponse) => <span>{props.username}</span>}
+          />
+          <ColumnDirective
+            field="name"
             headerText="Nom complet"
             width="200"
             textAlign="Left"
-            filter={{ type: "Menu" }}
-            template={(props: UserDTO) => <span>{props.fullName}</span>}
+            template={(props: UserDetailsResponse) => <span>{props.fullName}</span>}
           />
            <ColumnDirective
             field="email"
             headerText="Email"
             width="200"
             textAlign="Left"
-            filter={{ type: "Menu" }}
-            template={(props: UserDTO) => <span>{props.fullName}</span>}
+            template={(props: UserDetailsResponse) => <span>{props.email}</span>}
           />
           <ColumnDirective
             field="role"
             headerText="role"
             width="200"
             textAlign="Left"
-            filter={{ type: "Menu" }}
-            template={(props: Reservation) => <span>{props.fullName}</span>}
+            template={(props: UserDetailsResponse) => <span>{props.role.split("_")[1].toLowerCase()}</span>}
           />
           
          

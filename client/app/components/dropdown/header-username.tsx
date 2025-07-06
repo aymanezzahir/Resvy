@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from "lib/axios";
 import { cn } from "lib/util";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -18,12 +19,16 @@ export default function DropdownUsername({ user }: { user: UserDetailsResponse |
     nav = [{ name: "Historique", href: "/user/historique" } , { name: "Parametre", href: "/user/settings" }];
   }
 
-  const handleLogout = async () => {
-      const response = await axios.post(
-          "http://192.168.3.235:8080/api/auth/logout", null,{withCredentials : true}
-        );
-    navigate("/")
-  };
+const handleLogout = async () => {
+  try {
+ 
+    await axiosInstance.post("/api/auth/logout");
+
+    navigate("/login");
+  } catch (error) {
+    console.error("Logout failed", error);
+  }
+};
   return (
     <div className="relative">
       

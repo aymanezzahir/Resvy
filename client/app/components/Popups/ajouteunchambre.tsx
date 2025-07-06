@@ -1,26 +1,28 @@
 import { useEffect, useState } from "react";
 import { cn } from "lib/util";
-import { RoomStatus, RoomType } from "~/constants";
+import { roomStatuses } from "~/constants";
 import axios from "axios";
+import axiosInstance from "lib/axios";
 
 const CLOUDINARY_UPLOAD_URL = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_UPLOAD_RESET;
 
 export const initialRoomData: RoomCreateDTO = {
+  id: 0,
   roomNumber: "",
   typeId: 0,
   floor: 0,
   price: 0,
   description: "",
-  status: "Disponible",
+  status: "AVAILABLE",
   images: [],
-  type: "",
 };
 
 export default function RoomFormPopup({
   visible,
   setVisible,
+  RoomType
 }: {
   visible: { visible: boolean; data: RoomCreateDTO[] };
   setVisible: React.Dispatch<
@@ -29,10 +31,11 @@ export default function RoomFormPopup({
       data: RoomCreateDTO[];
     }>
   >;
+  RoomType : RoomType[]
 }) {
   const [formData, setFormData] = useState<RoomCreateDTO>(initialRoomData);
   const [uploading, setUploading] = useState(false);
-  const [RoomType, setRoomType] = useState<RoomType[]>([]);
+  
 
   function handleChange(
     e: React.ChangeEvent<
@@ -85,42 +88,19 @@ export default function RoomFormPopup({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    setVisible((pre) => ({
+   
+  
+    const response = await axiosInstance.post("api/rooms",formData);
+    
+ setVisible((pre) => ({
       visible: false,
-      data: [...pre.data, formData],
+      data: [...pre.data, response.data],
     }));
 
-    const response = await axios.post(
-      import.meta.env.VITE_SERVER2+"/api/rooms",
-      formData,
-      {
-        withCredentials: true,
-      }
-    );
-
-    console.log(formData);
+    
   }
 
-  useEffect(() => {
-    async function GetTypeRoom() {
-      const response = await axios.get(
-        import.meta.env.VITE_SERVER2+"/api/rooms/types",
-        {
-          withCredentials: true,
-        }
-      );
-
-      // The actual user list is in response.data
-      const types = response.data;
-      setRoomType(types);
-
-      // Log it to the console
-      console.log("Fetched users:", types);
-    }
-
-    GetTypeRoom();
-  }, []);
-
+ 
   return (
     <div
       className={cn(
@@ -135,7 +115,7 @@ export default function RoomFormPopup({
           onClick={function () {
             setVisible({
               visible: false,
-              data: [],
+              data: visible.data,
             });
             setFormData(initialRoomData);
           }}
@@ -236,9 +216,9 @@ export default function RoomFormPopup({
                 onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
               >
-                {RoomStatus.map((e, i) => (
-                  <option key={i} value={e}>
-                    {e}
+                {roomStatuses.map((e, i) => (
+                  <option key={i} value={e.id}>
+                    {e.value}
                   </option>
                 ))}
               </select>

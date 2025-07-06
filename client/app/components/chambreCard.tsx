@@ -4,6 +4,7 @@ import EditChambre from "./Popups/editunchambre";
 const ChambreCard = ({
   data,
   setData,
+  RoomType,
   ...props
 }: RoomCreateDTO & {
   data: RoomCreateDTO[];
@@ -13,6 +14,7 @@ const ChambreCard = ({
       data: RoomCreateDTO[];
     }>
   >;
+  RoomType : RoomType[]
 }) => {
   const [visible, setVisible] = useState<{
     visible: boolean;
@@ -67,7 +69,7 @@ const ChambreCard = ({
         </article>
       </button>
 
-      
+      <EditChambre setData={setData} setVisible={setVisible} visible={visible} RoomType={RoomType} />
     </>
   );
 };

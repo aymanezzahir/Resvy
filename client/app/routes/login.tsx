@@ -17,7 +17,7 @@ export default function Login() {
   async function submitFunc(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      await axiosInstance.post("/api/auth/login",user);
+      await axiosInstance.post("/api/auth/login",user , { withCredentials:true});
 
       const res = await axiosInstance.post("/api/auth/userdetails" ,null , {withCredentials:true})
         navigate("/");

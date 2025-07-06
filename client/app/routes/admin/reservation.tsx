@@ -8,15 +8,31 @@ import {
 } from "@syncfusion/ej2-react-grids";
 import { calculateTotal, cn, formatDate } from "lib/util";
 import { EditReservationPopup, Header } from "~/components";
-import { reservations } from "~/constants";
 
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
+import axiosInstance from "lib/axios";
 export default function Reservation() {
   const [visible, setvisisble] = useState<{
     visible: boolean;
     selectedID: string | null;
     data: Reservation[];
-  }>({ visible: false, data: reservations, selectedID: null });
+  }>({ visible: false, data: [], selectedID: null });
+
+  
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const data = await axiosInstance.get("/api/bookings");
+        setvisisble(pre=> ({...pre , data : data.data}));
+      } catch (err: any) {
+        console.error(err);
+      } 
+    };
+
+    getData();
+  }, []);
+
   return (
     <main className="wrapper all-users">
       <Header
@@ -25,7 +41,7 @@ export default function Reservation() {
       />
 
       <GridComponent
-        dataSource={reservations}
+        dataSource={visible.data}
         allowFiltering={true}
         allowPaging={true}
         allowSorting={true}
@@ -45,7 +61,7 @@ export default function Reservation() {
                 onClick={() =>
                   setvisisble(() => ({
                     visible: true,
-                    data: reservations,
+                    data: visible.data,
                     selectedID: props.id,
                   }))
                 }

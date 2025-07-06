@@ -2,21 +2,24 @@ import { Outlet, redirect } from "react-router";
 import { SidebarComponent } from "@syncfusion/ej2-react-navigations";
 import { NavBar, Mobilenav } from "~/components";
 import axios from "axios";
+import axiosInstance from "lib/axios";
 
 export async function clientLoader() {
-  // const user = await axios.get('');
+  try {
+    const res = await axiosInstance.post("/api/auth/userdetails");
+    const data: UserDetailsResponse = res.data;
 
-  const res = await axios.post(
-    "http://192.168.3.235:8080/api/auth/userdetails",
-    null,
-    { withCredentials: true }
-  );
-  const data: UserDetailsResponse = res.data;
+    if (data.role !== "ROLE_ADMIN") {
+      return redirect("/");
+    }
 
-  console.log(data);
-
-  return data;
+    return data;
+  } catch (error) {
+    return redirect("/login");
+  }
 }
+
+
 export default function AdminLayout() {
   return (
     <div className="admin-layout">

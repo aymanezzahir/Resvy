@@ -82,16 +82,7 @@ export const chartOneData: object[] = [
   },
 ];
 
-export const RoomType = [
-  "Standard",
-  "Familaire",
-  "Lux"
-];
-export const RoomStatus = [
-  "Disponible",
-  "Occupée",
-  "Maintenance"
-];
+
 
 export const interests = [
   "Food & Culinary",
@@ -235,4 +226,12 @@ export const reservations : Reservation[]= [
     nChambre: 240
 
   }
+];
+
+
+
+export const roomStatuses: RoomStatus[] = [
+  { id: 'AVAILABLE', value: 'Disponible' },
+  { id: 'BOOKED', value: 'Réservé' },
+  { id: 'MAINTENANCE', value: 'Entretien' },
 ];

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { cn } from "lib/util";
-import { RoomStatus, RoomType } from "~/constants";
+import { roomStatuses } from "~/constants";
 import { initialRoomData } from "./ajouteunchambre";
+import axiosInstance from "lib/axios";
 
 const CLOUDINARY_UPLOAD_URL = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
@@ -11,6 +12,7 @@ export default function EditChambre({
   visible,
   setVisible,
   setData,
+  RoomType
 }: {
   visible: { visible: boolean; data: RoomCreateDTO[]; self: RoomCreateDTO };
   setVisible: React.Dispatch<
@@ -20,6 +22,7 @@ export default function EditChambre({
       self: RoomCreateDTO;
     }>
   >;
+  RoomType : RoomType[];
   setData :  React.Dispatch<React.SetStateAction<{
     visible: boolean;
     data: RoomCreateDTO[];
@@ -27,7 +30,7 @@ export default function EditChambre({
 }) {
   const [formData, setFormData] = useState<RoomCreateDTO>(visible.self);
   const [uploading, setUploading] = useState(false);
-
+  
   function handleChange(
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -62,7 +65,7 @@ export default function EditChambre({
         if (data.secure_url) {
           setFormData((prev) => ({
             ...prev,
-            imgURL: [...prev.imgURL, data.secure_url],
+            imgURL: [...prev.images, data.secure_url],
           }));
         }
       } catch (err) {
@@ -73,9 +76,19 @@ export default function EditChambre({
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    console.log("Room created:", formData);
+    const res = await axiosInstance.put("api/rooms/"+visible.self.id , {
+      
+      roomNumber : formData.roomNumber,
+      typeId : formData.type?.id,
+      floor : formData.floor,
+      price : formData.price,
+      description : formData.description,
+      status : formData.status,
+      images : formData.images
+    })
+console.log("this" , formData)
     setVisible((pre) => ({
       visible: false,
       self: formData,
@@ -147,12 +160,12 @@ export default function EditChambre({
               <select
                 id="status"
                 name="status"
-                value={formData.type}
+                value={formData.typeId}
                 onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
               >
                 {RoomType.map((e , i) => (
-                  <option  key={i + 10} value={e}>{e}</option>
+                  <option  key={i + 10} value={e.id}>{e.name}</option>
                 ))}
               </select>
             </div>
@@ -206,8 +219,8 @@ export default function EditChambre({
                 onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
               >
-                {RoomStatus.map((e , i) => (
-                  <option key={i} value={e}>{e}</option>
+                {roomStatuses.map((e , i) => (
+                  <option key={i} value={e.id}>{e.value}</option>
                 ))}
               </select>
             </div>
@@ -279,14 +292,14 @@ export default function EditChambre({
                 <p className="text-sm text-blue-600 mt-1">Chargement...</p>
               )}
 
-              {formData.imgURL.map((e , i) => (
+              {formData.images.map((e , i) => (
                 <div key={i + 999} className="col-span-1 relative">
                   <button
                     type="button"
                     onClick={() =>
                       setFormData((pre) => ({
                         ...pre,
-                        imgURL: pre.imgURL.filter((item) => item !== e),
+                        imgURL: pre.images.filter((item) => item !== e),
                       }))
                     }
                     className="text-red-500 font-black cursor-pointer absolute right-2 top-2 text-lg"

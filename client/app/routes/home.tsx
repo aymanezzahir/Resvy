@@ -86,48 +86,13 @@ const TravelPage = ({ loaderData }: Route.ComponentProps) => {
                   </p>
                 </article>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                  <div className="grid grid-cols-3">
-                    {today && (
-                      <input
-                        type="date"
-                        min={today}
-                        value={checkIn}
-                        onChange={(e) => setCheckIn(e.target.value)}
-                        className="p-2 rounded text-black"
-                        required
-                      />
-                    )}
-
-                    {today && (
-                      <input
-                        type="date"
-                        min={today}
-                        value={checkOut}
-                        onChange={(e) => setCheckOut(e.target.value)}
-                        className="p-2 rounded text-black"
-                        required
-                      />
-                    )}
-
-                    <select
-                      value={guests}
-                      onChange={(e) => setGuests(e.target.value)}
-                      className="p-2 rounded text-black"
-                    >
-                      <option value="1">1 adulte</option>
-                      <option value="2">2 adultes</option>
-                      <option value="3">3 personnes</option>
-                      <option value="4">Famille</option>
-                    </select>
-                  </div>
-                  <ButtonComponent
-                    type="submit"
+                
+                 <ButtonComponent
+                    type="button"
                     className="button-class  !h-11 !w-full lg:!w-[240px]"
                   >
                     <span className="p-16-semibold text-white">Réserver</span>
                   </ButtonComponent>
-                </form>
               </div>
               <img
                 src="/assets/images/hero.jpg"

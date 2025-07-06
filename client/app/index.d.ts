@@ -27,16 +27,45 @@ declare interface Reservation {
 }
 
 declare interface RoomCreateDTO {
+  id : number
   roomNumber: string; // required, max length 10
   typeId: number; // required
   floor: number; // required, must be >= 0
   price: number; // required, must be >= 0
   description?: string;
-  status?: string; // optional, default can be handled in backend
+  status: 'AVAILABLE' | 'BOOKED' | 'MAINTENANCE'; // optional, default can be handled in backend
   images: {url : string , isPrimary : boolean}[]; // optional image URL
-  type?: string; // optional, name of the room type
+  type? : RoomType
 }
 
+
+declare interface RoomStatus {
+  id: 'AVAILABLE' | 'BOOKED' | 'MAINTENANCE';
+  value: string;
+}
+interface RoomType {
+  id: number;
+  name: string;
+  maxOccupancy: number;
+  // add any other fields you have in type object here
+}
+
+interface Image {
+  id: number;
+  url: string;
+  isPrimary: boolean;
+}
+
+interface Room {
+  id: number;
+  roomNumber: string;
+  status: 'AVAILABLE' | 'BOOKED' | 'MAINTENANCE'; // or string if more flexible
+  floor: number;
+  price: number;
+  description?: string;
+  type: RoomType;
+  images: Image[];
+}
 
 
 declare interface StatsCard {

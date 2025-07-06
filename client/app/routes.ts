@@ -10,8 +10,8 @@ export default [
         route("dashboard" , "routes/admin/dashboard.tsx"),
         route("all-users" , "routes/admin/all-user.tsx"),
         route("reservation" , "routes/admin/reservation.tsx"),
-        route("chambres" , "routes/admin/chambre.tsx")
-    ]) , 
+        route("chambres" , "routes/admin/chambre.tsx" ,  )
+    ] ) , 
     
     layout("routes/customers/client-layout.tsx" , [
         route("reserve" , "routes/customers/reserve.tsx"),

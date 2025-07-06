@@ -18,16 +18,11 @@ export default function RootNavbar() {
   const params = useParams();
   //   const user = useLoaderData();
   const navigate = useNavigate();
-  const handleLogout = async () => {
-    navigate("/logout");
-  };
-  
 
   useEffect(()=> {
     async function getUserData(){
       const res = await axiosInstance.post("/api/auth/userdetails" , null );
       const user : UserDetailsResponse = res.data
-      console.log(user)
       setUser(user);
     }
 

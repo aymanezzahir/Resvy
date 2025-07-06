@@ -22,7 +22,7 @@ export async function clientLoader() {
     return data;
   } catch (e) {
     console.log("Error in clientLoader", e);
-    return redirect("/sign-in");
+    return redirect("/login");
   }
 }
 

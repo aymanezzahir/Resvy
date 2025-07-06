@@ -1,40 +1,58 @@
-import { RootNavbar, Stepper } from "~/components";
-
-import { useEffect, useLayoutEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router";
+import axiosInstance from "lib/axios";
 import { FormStep1, FormStep2, FormStep3 } from "~/components/reserForm";
-import { useSearchParams, Navigate } from "react-router";
+import { Stepper } from "~/components";
 
-export default function Reserve() {
+const Reserve = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  
+  const [room, setRoom] = useState<Room | null>(null);
+
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  const roomNumber = searchParams.get("roomNumber");
   const roomID = searchParams.get("roomID");
- 
 
-  if (!roomID || !roomNumber) {
-    return <Navigate to={"/chambre"} replace />;
-  }
- 
+  useEffect(() => {
+    if (!roomID) {
+      navigate("/user/chambre");
+      return;
+    }
+
+    async function fetchRoom() {
+      try {
+        const res = await axiosInstance.get(`/api/rooms/${roomID}`);
+        const data = res.data;
+
+        if (data.status !== "AVAILABLE") {
+          navigate("/user/chambre");
+        } else {
+          setRoom(data);
+        }
+      } catch (error) {
+        navigate("/user/chambre");
+      }
+    }
+
+    fetchRoom();
+  }, [roomID, navigate]);
+
   const goNext = () => setCurrentStep((prev) => prev + 1);
+
   const steps = [
     { label: "Information", component: <FormStep1 onNext={goNext} /> },
     { label: "Paiement", component: <FormStep2 onNext={goNext} /> },
     { label: "Confirmation", component: <FormStep3 /> },
   ];
+
+  if (!room) return <p>Chargement de la chambre...</p>;
+
   return (
-    <div>
-
-      <main className="wrapper ">
-        <div className="relative">
-          <div className="absolute inset-0 z-99999"></div>
-          <Stepper currentStep={currentStep} />
-        </div>
-
-        <div className="mt-10">{steps[currentStep].component}</div>
-      </main>
-    </div>
+    <main className="wrapper">
+      <Stepper currentStep={currentStep} />
+      <div className="mt-10">{steps[currentStep].component}</div>
+    </main>
   );
-}
+};
+
+export default Reserve;
