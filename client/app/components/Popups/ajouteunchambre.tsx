@@ -11,7 +11,7 @@ const UPLOAD_PRESET = import.meta.env.VITE_UPLOAD_RESET;
 export const initialRoomData: RoomCreateDTO = {
   id: 0,
   roomNumber: "",
-  typeId: 0,
+  typeId: 1,
   floor: 0,
   price: 0,
   description: "",
@@ -87,7 +87,7 @@ export default function RoomFormPopup({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
+console.log(formData)
    
   
     const response = await axiosInstance.post("api/rooms",formData);

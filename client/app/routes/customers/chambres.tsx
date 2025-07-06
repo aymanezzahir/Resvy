@@ -54,7 +54,7 @@ const filteredRooms = rooms.filter((room) => {
     <main className="dashboard wrapper">
       <Header
         title="Toutes les Chambres"
-        description="Cliquez sur une chambre pour plus de détails."
+        description="Cliquez sur une chambre pour reserver<i>."
       />
 
       <div className="mb-4 flex flex-col sm:flex-row gap-4 items-start sm:items-end">

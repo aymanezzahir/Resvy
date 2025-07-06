@@ -12,7 +12,12 @@ const ChambreCardClient = ({ data }: { data: RoomCreateDTO }) => {
     <>
       <Link
         to={status == "AVAILABLE" ? `/reserve?roomID=${id}` : "."}
-        className={cn("trip-card  flex flex-col rounded-lg shadow-md overflow-hidden bg-white hover:shadow-lg transition-all duration-500 w-full max-w-sm" , {"hover:scale-110" : status == "AVAILABLE"})}
+        className={cn("trip-card  flex flex-col rounded-lg shadow-md overflow-hidden bg-white hover:shadow-lg transition-all duration-500 w-full max-w-sm" , {"hover:scale-105" : status == "AVAILABLE" , 
+          "cursor-"
+        }
+
+
+        )}
         type="button"
       >
         {images && images.length > 0 ? (

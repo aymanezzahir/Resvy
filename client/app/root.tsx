@@ -14,7 +14,7 @@ import "./app.css";
 
 import { registerLicense } from "@syncfusion/ej2-base";
 
-registerLicense(import.meta.env.VITE_SYNCFUSION_LICENSE_KEY)
+registerLicense("Ngo9BigBOggjHTQxAR8/V1NNaF1cXGJCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWXhednRcQ2JeVkF3VkNWYUA=")
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

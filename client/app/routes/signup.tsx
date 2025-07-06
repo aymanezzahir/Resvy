@@ -3,11 +3,12 @@ import axiosInstance from "lib/axios";
 import checkformsignup from "lib/checksignupform";
 import { cn } from "lib/util";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const initHide = { hide: true, message: "" };
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     fullname: "",
     username: "",
@@ -56,7 +57,7 @@ export default function Signup() {
       const response = await axiosInstance.post("/api/users/register",Registration,);
 
       console.log("✅ Inscription réussie :", response.data);
-      alert("✅ Inscription réussie !");
+      navigate("/login")
     } catch (error: any) {
       console.error(
         "❌ Erreur d'inscription :",
