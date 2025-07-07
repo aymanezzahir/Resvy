@@ -12,6 +12,16 @@ import { EditReservationPopup, Header } from "~/components";
 import { useEffect, useState } from "react";
 import axiosInstance from "lib/axios";
 
+// Types
+interface Booking {
+  id: number;
+  username: string;
+  roomNumber: number;
+  checkInDate: string;
+  checkOutDate: string;
+  status: "CONFIRMED" | "COMPLETED" | "CANCELLED" | string;
+}
+
 export default function Reservation() {
   const [visible, setvisisble] = useState<{
     visible: boolean;
@@ -19,13 +29,30 @@ export default function Reservation() {
     data: Booking[];
   }>({ visible: false, data: [], selectedID: null });
 
+  const [amounts, setAmounts] = useState<{ [bookingId: number]: number }>({});
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const data = await axiosInstance.get("/api/bookings");
-        setvisisble(pre => ({ ...pre, data: data.data }));
-        console.log(data);
+        const res = await axiosInstance.get("/api/bookings");
+        const bookings = res.data;
+
+        setvisisble(pre => ({ ...pre, data: bookings }));
+
+        // Fetch payment amounts for each booking
+        const amountsData: { [bookingId: number]: number } = {};
+        await Promise.all(
+          bookings.map(async (booking: Booking) => {
+            try {
+              const res = await axiosInstance.get(`/api/payments/booking/${booking.id}`);
+              amountsData[booking.id] = res.data.amount;
+            } catch (err) {
+              console.error("Erreur lors du chargement du montant pour la réservation:", booking.id);
+              amountsData[booking.id] = 0;
+            }
+          })
+        );
+        setAmounts(amountsData);
       } catch (err: any) {
         console.error(err);
       }
@@ -34,7 +61,6 @@ export default function Reservation() {
     getData();
   }, []);
 
-
   return (
     <main className="wrapper all-users">
       <Header
@@ -42,9 +68,8 @@ export default function Reservation() {
         description="Consultez, gérez et organisez toutes les réservations de vos clients."
       />
 
-      
       {visible.data.length > 0 && (
-        <GridComponent dataSource={visible.data} >
+        <GridComponent dataSource={visible.data}>
           <ColumnsDirective>
             <ColumnDirective
               field=""
@@ -73,12 +98,24 @@ export default function Reservation() {
               textAlign="Left"
               template={(props: Booking) => <span>{props.username}</span>}
             />
-
             <ColumnDirective
               field="roomNumber"
               headerText="N.chambre"
               width="80"
               textAlign="Left"
+            />
+            <ColumnDirective
+              field="amount"
+              headerText="Montant"
+              width="100"
+              textAlign="Left"
+              template={(props: Booking) => (
+                <span>
+                  {amounts[props.id] !== undefined
+                    ? `${amounts[props.id]} DH`
+                    : "Chargement..."}
+                </span>
+              )}
             />
             <ColumnDirective
               field="checkInDate"
@@ -158,6 +195,7 @@ export default function Reservation() {
           <Inject services={[Toolbar, Search]} />
         </GridComponent>
       )}
+
       <EditReservationPopup visible={visible} setVisible={setvisisble} />
     </main>
   );

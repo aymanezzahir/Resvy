@@ -114,6 +114,7 @@ declare interface Booking  {
   username: string;
   checkInDate: string;  
   checkOutDate: string; 
+  amount? : string,
   status: "CONFIRMED" | "COMPLETED" | "CANCELLED"; 
   createdAt: string | null;
 };

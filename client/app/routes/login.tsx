@@ -28,25 +28,7 @@ export default function Login() {
     }
   }
 
-  useEffect(() => {
-    async function fetchSessionUser() {
-      try {
-        const res = await axios.post(
-          import.meta.env.VITE_SERVER2+"/api/auth/userdetails",
-          null,
-          { withCredentials: true }
-        );
-        const data: UserDetailsResponse = res.data;
-        setUserDetails(data);
-      } catch (err) {
-       
-      } finally {
-        setLoading(false);
-      }
-    }
 
-    fetchSessionUser();
-  }, []);
 
   // If session already active, redirect
   if (!loading && userDetails) {
@@ -68,7 +50,7 @@ export default function Login() {
 
         <hr className="my-4 border-gray-500" />
 
-        {/* Username */}
+      
         <div className="mb-5">
           <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900">
             Nom d'utilisateur
@@ -84,7 +66,7 @@ export default function Login() {
           />
         </div>
 
-        {/* Password */}
+      
         <div className="mb-5">
           <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">
             Mot de passe
@@ -99,15 +81,7 @@ export default function Login() {
           />
         </div>
 
-        {/* Forgot password */}
-        <p className="text-sm mt-4">
-          Mot de passe oublié ?{" "}
-          <a href="/reset-password" className="text-primary-100 underline hover:opacity-80">
-            Réinitialisez-le ici
-          </a>
-        </p>
-
-        {/* Buttons */}
+ 
         <div className="flex justify-between gap-4">
           <button
             type="submit"
