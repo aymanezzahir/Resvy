@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import axiosInstance from "lib/axios";
+import React, { useEffect, useState } from "react";
 import { Header } from "~/components";
+import { passwordregex } from "~/constants/regex";
 
 interface UserFormProps {
   currentPassword: string; // Simulate stored password
@@ -11,16 +13,35 @@ interface UserFormProps {
   }) => void;
 }
 
-const Setting: React.FC<UserFormProps> = ({ currentPassword, onSubmit }) => {
+export default function Settings(){
   // Simulated session values
   const sessionUsername = "admin2";
   const sessionEmail = "client@example.com";
 
+
   const [formData, setFormData] = useState({
-    fullName: "",
-    oldPassword: "",
-    newPassword: "",
-  });
+  id : 0,
+  username: "",
+  email: "",
+  fullName: "",
+  newPassword: ""
+});
+
+useEffect(()=> {
+  async function getUserInfo(){
+    const resUser =  await axiosInstance.post("/api/auth/userdetails");
+    const data = resUser.data
+    setFormData(e=>({
+      ...e,
+      email : data.email,
+      username : data.username,
+      fullName : data.fullName,
+      id : data.id
+    }))
+  }
+
+  getUserInfo();
+} , []);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -30,27 +51,24 @@ const Setting: React.FC<UserFormProps> = ({ currentPassword, onSubmit }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    if (formData.oldPassword !== currentPassword) {
-      setError("Old password is incorrect.");
+    if (!passwordregex.test(formData.newPassword)) {
+      setError("mot de passe est faible.");
       return;
     }
 
     // Build final data
-    const dataToSubmit = {
-      username: sessionUsername,
-      email: sessionEmail,
-      fullName: formData.fullName,
-      password: formData.newPassword,
-    };
+    
+    await axiosInstance.put("api/users/" + formData.id , {password : formData.newPassword})
 
-    onSubmit(dataToSubmit);
     setSuccess("User updated successfully.");
   };
+
+  
 
   return (
     <div className="wrapper">
@@ -65,7 +83,7 @@ const Setting: React.FC<UserFormProps> = ({ currentPassword, onSubmit }) => {
           <input
             type="text"
             name="username"
-            value={sessionUsername}
+            value={formData.username}
             readOnly
             className="border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
           />
@@ -79,7 +97,7 @@ const Setting: React.FC<UserFormProps> = ({ currentPassword, onSubmit }) => {
           <input
             type="email"
             name="email"
-            value={sessionEmail}
+            value={formData.email}
             readOnly
             className="border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
           />
@@ -94,25 +112,10 @@ const Setting: React.FC<UserFormProps> = ({ currentPassword, onSubmit }) => {
             type="text"
             name="fullName"
             value={formData.fullName}
+            readOnly
             onChange={handleChange}
             placeholder="Full Name"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-            required
-          />
-        </div>
-
-        {/* Old Password */}
-        <div className="col-span-1">
-          <label htmlFor="oldPassword" className="block mb-2 text-sm font-medium text-gray-900">
-            Old Password
-          </label>
-          <input
-            type="password"
-            name="oldPassword"
-            value={formData.oldPassword}
-            onChange={handleChange}
-            placeholder="Enter old password"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+            className="bg-gray-50 border cursor-not-allowed border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
             required
           />
         </div>
@@ -151,4 +154,3 @@ const Setting: React.FC<UserFormProps> = ({ currentPassword, onSubmit }) => {
   );
 };
 
-export default Setting;

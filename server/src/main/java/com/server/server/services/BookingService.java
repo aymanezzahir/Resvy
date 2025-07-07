@@ -56,8 +56,13 @@ public class BookingService {
         booking.setCheckOutDate(bookingCreateDTO.getCheckOutDate());
         booking.setStatus(bookingCreateDTO.getStatus() != null ? bookingCreateDTO.getStatus() : "CONFIRMED");
 
+
+        room.setStatus("BOOKED");
+        roomRepository.save(room);
+
         Booking savedBooking = bookingRepository.save(booking);
         return mapToDTO(savedBooking);
+
     }
 
     // Get a booking by its ID
@@ -103,6 +108,9 @@ public class BookingService {
         if (!bookingRepository.existsById(bookingId)) {
             throw new EntityNotFoundException("Booking not found with ID: " + bookingId);
         }
+
+        Room room = bookingRepository.findById(bookingId).get().getRoom();
+        room.setStatus("AVAILABLE");
         bookingRepository.deleteById(bookingId);
     }
 

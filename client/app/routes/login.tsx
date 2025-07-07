@@ -20,10 +20,11 @@ export default function Login() {
       await axiosInstance.post("/api/auth/login",user , { withCredentials:true});
 
       const res = await axiosInstance.post("/api/auth/userdetails" ,null , {withCredentials:true})
+      localStorage.setItem("ui" , res.data.id)
         navigate("/");
       
     } catch (err) {
-      alert(err)
+      alert("username/mot de passe est incorrect!")
     }
   }
 

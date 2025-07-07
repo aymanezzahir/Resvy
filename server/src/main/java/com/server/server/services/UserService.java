@@ -94,6 +94,9 @@ public class UserService {
         // Now update fields
         userMapper.updateUserFromDTO(updateDTO, user);
 
+        if (updateDTO.getPassword() != null && !updateDTO.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(updateDTO.getPassword()));
+        }
         User updatedUser = userRepository.save(user);
         return userMapper.toUserDTO(updatedUser);
     }

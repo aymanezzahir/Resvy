@@ -1,10 +1,10 @@
 // Step 1
 import axios from "axios";
-import { calculateRoomPriceByType } from "lib/util";
+import axiosInstance from "lib/axios";
+import { calculateRoomPrice, getRandomCardType } from "lib/util";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router";
-
-const RoomType = ["Simple", "Double", "Suite", "Deluxe"];
+import { roomStatuses } from "~/constants";
 
 export type RoomFormData = {
   roomNumber: number;
@@ -12,23 +12,49 @@ export type RoomFormData = {
   roomID: number;
   checkin: Date;
   checkout: Date;
+  price: number;
 };
 
-export function FormStep1({ onNext }: { onNext: () => void }) {
-  const [searchParams , setSearchParams] = useSearchParams();
-  let roomID = searchParams.get("roomID");
-  let roomNumber = searchParams.get("roomNumber");
-  let typeRoom = searchParams.get("typeRoom");
-  const [formData, setFormData] = useState<RoomFormData>({
-    roomNumber: +(roomNumber || 0),
-    roomID: +(roomID || 0),
-    status: "Confirmee",
-    checkin: new Date(),
-    checkout: new Date(),
-  });
-  const navigate = useNavigate()
+function getTomorrowDate() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow.toISOString().split("T")[0];
+}
 
-  useEffect(() => {}, [roomID, roomNumber, RoomType]);
+export function FormStep1({ onNext }: { onNext: () => void }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  let roomID = searchParams.get("roomID");
+  const [formData, setFormData] = useState<RoomFormData>({
+  roomNumber: 0,
+  roomID: +(roomID || 0),
+  status: "Confirmee",
+  checkin: (() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow;
+  })(), 
+  checkout: (() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow;
+  })(),
+  price: 0,
+});
+  useEffect(() => {
+    async function getUserById() {
+      const res = await axiosInstance.get("api/rooms/" + roomID);
+      const data = res.data;
+
+      setFormData((pre) => ({
+        ...pre,
+        roomNumber: data.roomNumber,
+        roomID: data.id,
+        price: data.price,
+      }));
+    }
+
+    getUserById();
+  }, [roomID]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -49,25 +75,22 @@ export function FormStep1({ onNext }: { onNext: () => void }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // const userID = localStorage.getItem("userID");
-    // const res = await axios.post("http://localhost:8080/api/bookings/user/" + userID , {
-    //   roomID: formData.roomID,
-    // status: "Confirmee",
-    // checkin:  formData.checkin,
-    // checkout: formData.checkout
-    // });
-    // const bookingInfo = res.data
-    const bookingID = 6
-    searchParams.set("bookingID" , bookingID.toString())
-    setSearchParams(searchParams)
+    const resUser = await axiosInstance.post("api/auth/userdetails");
+
+    const res = await axiosInstance.post(
+      "api/bookings/user/" + resUser.data.id,
+      {
+        roomId: formData.roomID,
+        checkInDate: formData.checkin.toISOString().split("T")[0],
+        checkOutDate: formData.checkout.toISOString().split("T")[0],
+      }
+    );
+    const bookingInfo = res.data;
+
+    localStorage.setItem("bookingId", bookingInfo.id);
+
     onNext(); // Move to next step
   };
-
-    const bookingID = searchParams.get("bookingID");
-  useEffect(()=> {
-    if(bookingID) onNext();
-  } , [searchParams]);
-
 
   return (
     <form onSubmit={handleSubmit} className="grid w-full gap-4">
@@ -83,7 +106,7 @@ export function FormStep1({ onNext }: { onNext: () => void }) {
           type="number"
           min={0}
           name="roomNumber"
-          value={formData.roomNumber}
+          value={+formData.roomNumber}
           disabled
           placeholder="Numéro de chambre"
           required
@@ -103,8 +126,8 @@ export function FormStep1({ onNext }: { onNext: () => void }) {
           type="number"
           min={0}
           name="price"
-          value={calculateRoomPriceByType(
-            typeRoom || "Single Room",
+          value={calculateRoomPrice(
+            formData.price,
             formData.checkin.toISOString(),
             formData.checkout.toISOString()
           )}
@@ -127,7 +150,8 @@ export function FormStep1({ onNext }: { onNext: () => void }) {
         <input
           type="date"
           name="checkin"
-          value={formData.checkout.toISOString().split("T")[0]}
+          min={getTomorrowDate()}
+          value={formData.checkin.toISOString().split("T")[0]}
           onChange={handleChange}
           placeholder="Prix"
           required
@@ -145,6 +169,7 @@ export function FormStep1({ onNext }: { onNext: () => void }) {
         <input
           type="date"
           name="checkout"
+          min={formData.checkin.toISOString().split("T")[0]}
           value={formData.checkout.toISOString().split("T")[0]}
           onChange={handleChange}
           placeholder="Prix"
@@ -169,11 +194,13 @@ export function FormStep1({ onNext }: { onNext: () => void }) {
 // Step 2
 
 export function FormStep2({ onNext }: { onNext: () => void }) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     cardName: "",
     cardNumber: "",
     expiry: "",
     cvc: "",
+    prix: 0,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -184,19 +211,41 @@ export function FormStep2({ onNext }: { onNext: () => void }) {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Payment Info:", formData);
+
+    // get id from local storage
+    const id = Number(localStorage.getItem("bookingId"));
+
+
+    const res = await axiosInstance.post("api/payments", {
+      bookingId: id,
+      method: getRandomCardType(),
+    });
+
     onNext();
     // You'd typically send the data to Stripe, PayPal, etc.
   };
 
+  useEffect(() => {
+    const id = Number(localStorage.getItem("bookingId"));
+
+    if (!id) navigate("/user/chambre");
+  }, []);
+
   return (
-    <form onSubmit={handleSubmit} className="mx-auto bg-white p-6 rounded-lg shadow-md space-y-4">
-      <h2 className="text-2xl font-semibold text-gray-700">Payment Information</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="mx-auto bg-white p-6 rounded-lg shadow-md space-y-4"
+    >
+      <h2 className="text-2xl font-semibold text-gray-700">
+        Payment Information
+      </h2>
 
       <div>
-        <label className="block mb-1 font-medium text-sm text-gray-700">Cardholder Name</label>
+        <label className="block mb-1 font-medium text-sm text-gray-700">
+          Cardholder Name
+        </label>
         <input
           type="text"
           name="cardName"
@@ -208,7 +257,9 @@ export function FormStep2({ onNext }: { onNext: () => void }) {
       </div>
 
       <div>
-        <label className="block mb-1 font-medium text-sm text-gray-700">Card Number</label>
+        <label className="block mb-1 font-medium text-sm text-gray-700">
+          Card Number
+        </label>
         <input
           type="text"
           name="cardNumber"
@@ -222,7 +273,9 @@ export function FormStep2({ onNext }: { onNext: () => void }) {
 
       <div className="flex space-x-4">
         <div className="flex-1">
-          <label className="block mb-1 font-medium text-sm text-gray-700">Expiry Date</label>
+          <label className="block mb-1 font-medium text-sm text-gray-700">
+            Expiry Date
+          </label>
           <input
             type="text"
             name="expiry"
@@ -235,7 +288,9 @@ export function FormStep2({ onNext }: { onNext: () => void }) {
         </div>
 
         <div className="flex-1">
-          <label className="block mb-1 font-medium text-sm text-gray-700">CVC</label>
+          <label className="block mb-1 font-medium text-sm text-gray-700">
+            CVC
+          </label>
           <input
             type="text"
             name="cvc"
@@ -259,28 +314,53 @@ export function FormStep2({ onNext }: { onNext: () => void }) {
 }
 
 // Step 3
-export const FormStep3 = () => (
+export function FormStep3() {
+  const [data , setData] = useState({username : "" , amount : 0})
+  const navigate = useNavigate()
+  useEffect(() => {
+    
+  }, []);
+
+   useEffect(() => {
+    const id = Number(localStorage.getItem("bookingId"));
+    if (!id) navigate("/user/chambre");
+
+    async function getPayementById() {
+      const resUser =  await axiosInstance.post("/api/auth/userdetails");
+      const resData = await axiosInstance.get("/api/payments/booking/" + id);
+      setData({username : resUser.data.username , amount : resData.data.amount})
+      
+      
+    }
+
+    getPayementById();
+  }, []);
+
+  return (
   <div>
-    <img src="/assets/images/check.png" className="block mx-auto w-40"  alt="" />
+    <img src="/assets/images/check.png" className="block mx-auto w-40" alt="" />
 
     <div className="flex py-5 justify-between items-center">
       <p className="text-lg font-bold">Nom complete</p>
-      <p className="text-lg font-bold">Clairedu</p>
+      <p className="text-lg font-bold">{data.username}</p>
     </div>
     <hr />
     <div className="flex py-5 justify-between items-center">
       <p className="text-lg font-bold">montant</p>
-      <p className="text-lg font-bold">24$</p>
+      <p className="text-lg font-bold">{data.amount}$</p>
     </div>
-    <p className="text-center font-semibold text-gray-400">Le paiement a été effectué avec succès.</p>
+    <p className="text-center font-semibold text-gray-400">
+      Le paiement a été effectué avec succès.
+    </p>
 
-     <div className="col-span-3">
-        <Link
-          to={"/user/historique"}
-          className="text-white bg-primary-100 hover:bg-primary-500 w-full font-medium rounded-lg text-sm px-5 py-2.5"
-        >
-          Historique
-        </Link>
-      </div>
+    <div className="col-span-3">
+      <Link
+        to={"/user/historique"}
+        className="text-white bg-primary-100 hover:bg-primary-500 w-full font-medium rounded-lg text-sm px-5 py-2.5"
+      >
+        Historique
+      </Link>
+    </div>
   </div>
-);
+)
+}

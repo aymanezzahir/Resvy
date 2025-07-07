@@ -11,7 +11,7 @@ public class PaymentCreateDTO {
     @NotNull(message = "Booking ID is required")
     private Long bookingId;
 
-    @NotNull(message = "Amount is required")
+
     @DecimalMin(value = "0.0", inclusive = true, message = "Amount must be non-negative")
     private BigDecimal amount;
 

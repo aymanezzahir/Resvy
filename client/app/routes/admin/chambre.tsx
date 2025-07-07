@@ -69,7 +69,7 @@ const [RoomType, setRoomType] = useState<RoomType[]>([]);
 
         <AjouteUnChambre RoomType={RoomType} visible={visible} setVisible={setvisisble} />
       </div>
-      <div className="grid grid-cols-3">
+      <div className="grid grid-cols-3 w-full gap-4 max-md:grid-cols-1">
         {visible.data.map((e, i) => (
           <ChambreCard RoomType={RoomType} key={i + 66} {...e} data={visible.data} setData={setvisisble} />
         ))}

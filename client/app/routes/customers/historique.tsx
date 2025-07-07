@@ -1,23 +1,36 @@
 import {
   ColumnDirective,
   ColumnsDirective,
-  Filter,
   GridComponent,
-  Search,
-  Toolbar,
-  Inject,
 } from "@syncfusion/ej2-react-grids";
-import { calculateTotal, cn, formatDate } from "lib/util";
+import {  cn, formatDate } from "lib/util";
 import { EditReservationPopup, Header } from "~/components";
-import { reservations } from "~/constants";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axiosInstance from "lib/axios";
 export default function Historique() {
   const [visible, setvisisble] = useState<{
     visible: boolean;
     selectedID: string | null;
-    data: Reservation[];
-  }>({ visible: false, data: reservations, selectedID: null });
+    data: Booking[];
+  }>({ visible: false, data: [], selectedID: null });
+
+
+  useEffect(() => {
+    async function getHistorique() {
+
+      const res = await axiosInstance.get("api/bookings/user/" +localStorage.getItem("ui"));
+  
+      console.log(res.data)
+      setvisisble(e => ({
+        ...e,
+        data : res.data
+      }))
+      
+    }
+
+    getHistorique();
+  } , []);
   return (
     <main className="wrapper all-users">
       <Header
@@ -25,43 +38,24 @@ export default function Historique() {
         description=""
       />
 
-      <GridComponent
-        dataSource={reservations}
-        allowFiltering={true}
-        allowPaging={true}
-        allowSorting={true}
-        toolbar={["Search"]}
-        pageSettings={{ pageSize: 6 }}
+    {visible.data.length > 0 && <GridComponent
+        dataSource={visible.data}
+       
+        
+        
       >
-        <Inject services={[ Search , Toolbar]} />
         <ColumnsDirective>
           
+      
           <ColumnDirective
-            field="numberOfGuests"
-            headerText="nbr"
-            width="50"
-            textAlign="Left"
-          />
-          <ColumnDirective
-            field="total"
-            headerText="Total"
-            width="70"
-            textAlign="Left"
-            template={(props: Reservation) => (
-              <span>
-                {calculateTotal(props.starRoom, props.numberOfGuests)}$
-              </span>
-            )}
-          />
-          <ColumnDirective
-            field="nChambre"
+            field="roomNumber"
             headerText="N.chambre"
             width="80"
             textAlign="Left"
           />
           <ColumnDirective
             field="checkInDate"
-            headerText="Date d’arrivée"
+            headerText="Depart reserv."
             width="140"
             textAlign="Left"
             template={({ checkInDate }: { checkInDate: string }) =>
@@ -70,7 +64,7 @@ export default function Historique() {
           />
           <ColumnDirective
             field="checkOutDate"
-            headerText="Date de départ"
+            headerText="Fin reserv."
             width="140"
             textAlign="Left"
             template={({ checkOutDate }: { checkOutDate: string }) =>
@@ -82,7 +76,7 @@ export default function Historique() {
             headerText="Statut"
             width="120"
             textAlign="Left"
-            template={({ status }: Reservation) => {
+            template={({ status }: Booking) => {
               const statusStyles: {
                 [key: string]: {
                   bg: string;
@@ -90,22 +84,18 @@ export default function Historique() {
                   text: string;
                 };
               } = {
-                Confirmée: {
+                CONFIRMED: {
                   bg: "bg-success-50",
                   dot: "bg-success-500",
                   text: "text-success-700",
                 },
-                "En cours": {
-                  bg: "bg-blue-50",
-                  dot: "bg-blue-500",
-                  text: "text-blue-700",
-                },
+                
                 Terminée: {
                   bg: "bg-purple-50",
                   dot: "bg-purple-500",
                   text: "text-purple-700",
                 },
-                Annulée: {
+                CANCELLED: {
                   bg: "bg-red-50",
                   dot: "bg-red-500",
                   text: "text-red-700",
@@ -140,8 +130,9 @@ export default function Historique() {
           />
         </ColumnsDirective>
       </GridComponent>
+}
 
-      <EditReservationPopup visible={visible} setVisible={setvisisble} />
+     
     </main>
   );
 }

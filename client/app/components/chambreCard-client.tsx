@@ -13,12 +13,12 @@ const ChambreCardClient = ({ data }: { data: RoomCreateDTO }) => {
       <Link
         to={status == "AVAILABLE" ? `/reserve?roomID=${id}` : "."}
         className={cn("trip-card  flex flex-col rounded-lg shadow-md overflow-hidden bg-white hover:shadow-lg transition-all duration-500 w-full max-w-sm" , {"hover:scale-105" : status == "AVAILABLE" , 
-          "cursor-"
+          "cursor-not-allowed" :status != "AVAILABLE"
         }
 
 
         )}
-        type="button"
+       
       >
         {images && images.length > 0 ? (
           <img
@@ -65,7 +65,7 @@ type StatusStyle = {
   dot: string;
   text: string;
 };
-function getRoomStatusStyles(status: string): StatusStyle {
+export function getRoomStatusStyles(status: string): StatusStyle {
   const styles: Record<string, StatusStyle> = {
     AVAILABLE: {
       bg: "bg-green-200",

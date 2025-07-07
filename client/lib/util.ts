@@ -50,37 +50,22 @@ export function calculateTotal(start : number, nbr : number) {
   return total;
 }
 
-export function calculateRoomPriceByType(
-  roomType: string,
+export function calculateRoomPrice(
+  pricePerNight: number,
   checkIn: string,
-  checkOut: string,
-  baseRatePerNight: number = 100
+  checkOut: string
 ): number {
-  const roomStars: Record<string, number> = {
-    "Single Room": 1,
-    "Double Room": 2,
-    "Twin Room": 2,
-    "Deluxe Room": 3,
-    "Family Suite": 4,
-    "Presidential Suite": 5,
-    "Studio Room": 3,
-    "Accessible Room": 3,
-  };
-
-  const star = roomStars[roomType] ?? 1; // default to 1 star if not found
-
-  const multipliers = [0.8, 1.0, 1.2, 1.5, 1.8, 2.2];
-  const multiplier = multipliers[star];
-
   const start = new Date(checkIn);
   const end = new Date(checkOut);
   const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 
-  
-
-  return Math.round(baseRatePerNight * days * multiplier * 100) / 100;
+  return Math.round(pricePerNight * days * 100) / 100;
 }
-
+export function getRandomCardType(): string {
+  const cardTypes = ["Visa", "MasterCard", "American Express", "Discover", "Diners Club", "JCB", "UnionPay"];
+  const index = Math.floor(Math.random() * cardTypes.length);
+  return cardTypes[index];
+}
 
 export function getFirstWord(input: string = ""): string {
     return input.trim().split(/\s+/)[0] || "";

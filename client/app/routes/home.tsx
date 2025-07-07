@@ -51,21 +51,7 @@ const TravelPage = ({ loaderData }: Route.ComponentProps) => {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState("1");
-  const [today, setToday] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Example: handle the booking logic here
-    alert(
-      `Réservation du ${checkIn} au ${checkOut} pour ${guests} personne(s).`
-    );
-  };
-  useEffect(() => {
-    const now = new Date();
-    setToday(now.toISOString().split("T")[0]); // Only YYYY-MM-DD
-  }, []);
-
+  
   return (
     <div>
       <RootNavbar />
@@ -87,12 +73,12 @@ const TravelPage = ({ loaderData }: Route.ComponentProps) => {
                 </article>
 
                 
-                 <ButtonComponent
-                    type="button"
+                 <Link
+                    to={"user/chambre"}
                     className="button-class  !h-11 !w-full lg:!w-[240px]"
                   >
                     <span className="p-16-semibold text-white">Réserver</span>
-                  </ButtonComponent>
+                  </Link>
               </div>
               <img
                 src="/assets/images/hero.jpg"

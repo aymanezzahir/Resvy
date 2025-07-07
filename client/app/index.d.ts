@@ -7,11 +7,6 @@ declare interface BaseUser {
 }
 declare interface Reservation {
   id: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  total: number;
-  numberOfGuests: number;
   nChambre: number;
   starRoom: number;
   checkInDate: string; // Format: YYYY-MM-DD
@@ -89,7 +84,7 @@ declare interface UserDTO  {
   username: string;
   email: string;
   fullName: string;
-  role: string;
+  role: Role;
   createdAt: Date;
 };
 
@@ -110,3 +105,15 @@ declare interface RoomType {
   maxOccupancy: number;
   description: string;
 }
+
+declare interface Booking  {
+  id: number;
+  roomId: number;
+  roomNumber: string;
+  userId: number;
+  username: string;
+  checkInDate: string;  
+  checkOutDate: string; 
+  status: "CONFIRMED" | "COMPLETED" | "CANCELLED"; 
+  createdAt: string | null;
+};

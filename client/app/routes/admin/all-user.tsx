@@ -10,22 +10,34 @@ import {
 
 import axiosInstance from "lib/axios";
 import { useEffect, useState } from "react";
+import EditUser from "~/components/Popups/edit-user";
+
+export const initialUser: UserDTO = {
+  id: 0,
+  username: "",
+  email: "",
+  fullName: "",
+  role: "ROLE_CUSTOMER", 
+  createdAt: new Date(), 
+};
 
 export default function AllUser() {
-  const [users , setUsers] = useState<UserDetailsResponse[]>([])
+  const [users, setUsers] = useState<UserDetailsResponse[]>([]);
+  const [visible, setvisisble] = useState<{visible : boolean , self : UserDTO}>({ visible: false , self : initialUser });
   useEffect(() => {
-      const getData = async () => {
-        try {
-          const data = await axiosInstance.get("/api/users/all");
-          console.log(data.data)
-          setUsers(data.data);
-        } catch (err: any) {
-          console.error(err);
-        } 
-      };
-  
-      getData();
-    }, []);
+    const getData = async () => {
+      try {
+        const data = await axiosInstance.get("/api/users/all");
+        console.log(data.data);
+        setUsers(data.data);
+      } catch (err: any) {
+        console.error(err);
+      }
+    };
+
+    getData();
+  }, []);
+
   return (
     <main className="dashboard wrapper">
       <Header
@@ -33,15 +45,13 @@ export default function AllUser() {
         description="Accédez à la liste complète de vos clients : fidèles voyageurs ou nouveaux venus. Apprenez à mieux les connaître pour mieux les servir !"
       />
 
-      <GridComponent
+     {users.length > 0 &&  <GridComponent
         dataSource={users}
         allowFiltering={true}
         allowPaging={true}
         allowSorting={true}
-        toolbar={["Search"]}
         pageSettings={{ pageSize: 6 }}
       >
-        <Inject services={[Search, Toolbar]} />
         <ColumnsDirective>
           <ColumnDirective
             field=""
@@ -51,9 +61,7 @@ export default function AllUser() {
             template={(props: UserDTO) => (
               <button
                 className="cursor-pointer"
-                onClick={() =>
-                console.log("click")
-                }
+                onClick={() => setvisisble({visible : true , self : props})}
               >
                 <img width={30} src="/assets/icons/edit.svg" />
               </button>
@@ -64,39 +72,41 @@ export default function AllUser() {
             headerText="Nom Utilisateur"
             width="200"
             textAlign="Left"
-            template={(props: UserDetailsResponse) => <span>{props.username}</span>}
+            template={(props: UserDetailsResponse) => (
+              <span>{props.username}</span>
+            )}
           />
           <ColumnDirective
             field="name"
             headerText="Nom complet"
             width="200"
             textAlign="Left"
-            template={(props: UserDetailsResponse) => <span>{props.fullName}</span>}
+            template={(props: UserDetailsResponse) => (
+              <span>{props.fullName}</span>
+            )}
           />
-           <ColumnDirective
+          <ColumnDirective
             field="email"
             headerText="Email"
             width="200"
             textAlign="Left"
-            template={(props: UserDetailsResponse) => <span>{props.email}</span>}
+            template={(props: UserDetailsResponse) => (
+              <span>{props.email}</span>
+            )}
           />
           <ColumnDirective
             field="role"
             headerText="role"
             width="200"
             textAlign="Left"
-            template={(props: UserDetailsResponse) => <span>{props.role.split("_")[1].toLowerCase()}</span>}
+            template={(props: UserDetailsResponse) => (
+              <span>{props.role.split("_")[1].toLowerCase()}</span>
+            )}
           />
-          
-         
-          
-          
-          
-          
-          
-          
         </ColumnsDirective>
       </GridComponent>
+}
+      {visible.visible && <EditUser self={visible.self} setVisible={setvisisble} />}
     </main>
   );
 }

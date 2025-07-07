@@ -8,6 +8,7 @@ import com.server.server.repositories.RoomImageRepository;
 import com.server.server.repositories.RoomRepository;
 import com.server.server.repositories.RoomTypeRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -109,7 +110,7 @@ public class RoomService {
     }
 
     // Delete a room
-
+    @Transactional
     public void deleteRoom(Long roomId) {
         if (!roomRepository.existsById(roomId)) {
             throw new EntityNotFoundException("Room not found with ID: " + roomId);

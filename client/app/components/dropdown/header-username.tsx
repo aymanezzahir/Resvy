@@ -23,7 +23,7 @@ const handleLogout = async () => {
   try {
  
     await axiosInstance.post("/api/auth/logout");
-
+    localStorage.clear();
     navigate("/login");
   } catch (error) {
     console.error("Logout failed", error);

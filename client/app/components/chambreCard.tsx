@@ -1,5 +1,8 @@
 import { useState } from "react";
 import EditChambre from "./Popups/editunchambre";
+import { cn } from "lib/util";
+import { roomStatuses } from "~/constants";
+import { getRoomStatusStyles, getRoomTypeStyles } from "./chambreCard-client";
 
 const ChambreCard = ({
   data,
@@ -26,7 +29,7 @@ const ChambreCard = ({
     self: props,
   });
 
-  const { roomNumber, typeId, floor, images, description, price, status } = props;
+  const { roomNumber, type, floor, images, description, price, status } = props;
 
   return (
     <>
@@ -38,35 +41,44 @@ const ChambreCard = ({
             self: props,
           })
         }
-        className="trip-card flex flex-col rounded-lg shadow-md overflow-hidden bg-white hover:shadow-lg transition-shadow w-full max-w-sm"
+        className="trip-card  flex flex-col rounded-lg shadow-md overflow-hidden bg-white hover:shadow-lg transition-shadow"
         type="button"
       >
-        {images && images.length > 0 ? (
-          <img
-            src={images[0].url}
-            alt={`Photo chambre ${roomNumber}`}
-            className="w-full h-40 object-cover"
-          />
-        ) : (
-          <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
-            Pas d'image
-          </div>
-        )}
-
-        <article className="p-4 flex flex-col flex-grow">
-          <h2 className="text-xl font-semibold mb-1">Chambre #{roomNumber}</h2>
-          <p className="text-gray-700 flex-grow mb-2 line-clamp-3">{description}</p>
-
-          <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
-            <span>Étage: {floor}</span>
-            <span>Type ID: {typeId}</span>
-            <span>Status: {status}</span>
-          </div>
-
-          <div className="tripCard-pill text-right font-bold text-primary-600 text-lg">
-            {price} €
-          </div>
-        </article>
+         {images && images.length > 0 ? (
+                  <img
+                    src={images[0].url}
+                    alt={`Photo chambre ${roomNumber}`}
+                    className="w-full h-40 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+                    Pas d'image
+                  </div>
+                )}
+        
+                <article className="p-4 flex flex-col flex-grow">
+                  <div className="flex justify-between">
+                    <h2 className="text-xl font-semibold mb-1">
+                      Chambre #{roomNumber}
+                    </h2>
+                    <div className={cn(getRoomStatusStyles(status).bg , "p-2 flex gap-2 items-center  rounded-2xl") }>
+                      {status == "AVAILABLE" && <span className="w-2 h-2 rounded-full animate-pulse bg-green-700"></span>}
+                      <span className={cn(getRoomStatusStyles(status).text , "font-bold")}>{roomStatuses.filter((e) => e.id == status)[0].value}</span>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 flex-grow mb-2 line-clamp-3">
+                    {description}. Étage: {floor}
+                  </p>
+        
+                  
+        
+                  <div className="tripCard-pill text-right font-bold text-primary-600 text-lg">
+                    {price} €/jour
+                  </div>
+                  <div className={cn("tripCard-pill-2 text-right font-bold text-primary-600 text-lg" ,getRoomTypeStyles(type?.name || "").bg)}>
+                    {type?.name}
+                  </div>
+                </article>
       </button>
 
       <EditChambre setData={setData} setVisible={setVisible} visible={visible} RoomType={RoomType} />
